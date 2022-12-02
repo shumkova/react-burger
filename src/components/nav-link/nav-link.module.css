@@ -1,0 +1,23 @@
+.link {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+
+    width: fit-content;
+
+    color: var(--text--inactive-color);
+    text-decoration: none;
+}
+
+.link svg {
+    flex-shrink: 0;
+}
+
+.link_active {
+    color: var(--text-color);
+    cursor: default;
+}
+
+.link_type_profile {
+    justify-self: end;
+}

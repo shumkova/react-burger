@@ -1,0 +1,28 @@
+.ingredients {
+
+}
+
+.tabs {
+    display: flex;
+}
+
+.sections {
+    min-height: 580px;
+    max-height: calc(100vh - 364px);
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.sections::-webkit-scrollbar {
+
+    width: 8px;
+}
+
+.sections::-webkit-scrollbar-track {
+    background-color: #2F2F37;
+}
+
+.sections::-webkit-scrollbar-thumb {
+    background: #8585AD;
+    border: 3px solid #8585AD;
+}
