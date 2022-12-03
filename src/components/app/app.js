@@ -7,7 +7,6 @@ import {Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-comp
 
 class App extends React.Component {
   state = {
-    current: 'bun',
     chosen: {
       bun: data.find((item) => item.type === 'bun'),
       inner: data.filter((item) => item.type !== 'bun').slice(0, 1),
@@ -15,20 +14,13 @@ class App extends React.Component {
   }
 
   render () {
-    const setCurrent = (evt) => {
-      this.setState((prevState) => ({
-        ...prevState,
-        current: evt,
-      }))
-    }
-
     return (
       <div className="page">
         <AppHeader />
         <main className="main container pt-10">
           <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
           <div className="two-columns">
-            <BurgerIngredients current={this.state.current} onCLick={setCurrent} ingredients={data}/>
+            <BurgerIngredients ingredients={data}/>
 
             <div className="order">
               <BurgerConstructor bun={this.state.chosen.bun} inner={this.state.chosen.inner}/>
