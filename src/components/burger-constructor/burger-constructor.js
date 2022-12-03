@@ -1,14 +1,16 @@
 import React from "react";
+import PropTypes from "prop-types";
 import styles from "./burger-constructor.module.css";
-import {ConstructorElement, CurrencyIcon, DragIcon, Button} from "@ya.praktikum/react-developer-burger-ui-components";
+import {ConstructorElement, DragIcon} from "@ya.praktikum/react-developer-burger-ui-components";
+import {ingredientPropTypes} from "../../utils/proptypes";
 
 class BurgerConstructor extends React.Component {
   render () {
-    const {ingredients} = this.props;
-    let innerIngredients;
+    const {bun, inner} = this.props;
+    let innerElements = null;
 
-    if (ingredients.other.length) {
-      innerIngredients = ingredients.other.map((item, index) => {
+    if (inner.length) {
+      innerElements = inner.map((item, index) => {
         return (
           <li className={styles.item} key={index}>
             <button className={styles.drug} type="button"><DragIcon type={"primary"} /></button>
@@ -20,36 +22,41 @@ class BurgerConstructor extends React.Component {
 
     return (
       <div className={`${styles.burgerConstructor} pl-4 pb-5`}>
-          {ingredients.bun && (
+          {bun && (
             <ConstructorElement
               type="top"
               isLocked={true}
-              text={ingredients.bun.name}
-              price={ingredients.bun.price}
-              thumbnail={ingredients.bun.image}
-              extraClass={'ml-8'}
+              text={bun.name}
+              price={bun.price}
+              thumbnail={bun.image}
+              extraClass={'ml-8 mb-4'}
             />
           )}
 
-          {ingredients.other.length && (
-            <ul className={`${styles.inner} mt-4 mb-4`}>
-              {innerIngredients}
+          {innerElements && (
+            <ul className={`${styles.inner}`}>
+              {innerElements}
             </ul>
           )}
 
-          {ingredients.bun && (
+          {bun && (
             <ConstructorElement
               type="bottom"
               isLocked={true}
-              text={ingredients.bun.name}
-              price={ingredients.bun.price}
-              thumbnail={ingredients.bun.image}
-              extraClass={'ml-8'}
+              text={bun.name}
+              price={bun.price}
+              thumbnail={bun.image}
+              extraClass={'ml-8 mt-4'}
             />
           )}
       </div>
     )
   }
+}
+
+BurgerConstructor.propTypes = {
+  bun: ingredientPropTypes,
+  inner: PropTypes.arrayOf(ingredientPropTypes),
 }
 
 export default BurgerConstructor;

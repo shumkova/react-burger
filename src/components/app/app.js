@@ -6,20 +6,16 @@ import BurgerConstructor from "../burger-constructor/burger-constructor";
 import {Button, CurrencyIcon} from "@ya.praktikum/react-developer-burger-ui-components";
 
 class App extends React.Component {
-
-
-
   state = {
     current: 'bun',
     chosen: {
       bun: data.find((item) => item.type === 'bun'),
-      other: data.filter((item) => item.type !== 'bun').slice(0, 8),
+      inner: data.filter((item) => item.type !== 'bun').slice(0, 1),
     },
   }
 
   render () {
     const setCurrent = (evt) => {
-      console.log(typeof evt);
       this.setState((prevState) => ({
         ...prevState,
         current: evt,
@@ -35,7 +31,7 @@ class App extends React.Component {
             <BurgerIngredients current={this.state.current} onCLick={setCurrent} ingredients={data}/>
 
             <div className="order">
-              <BurgerConstructor ingredients={this.state.chosen}/>
+              <BurgerConstructor bun={this.state.chosen.bun} inner={this.state.chosen.inner}/>
               <div className="order__footer mt-5 pr-4">
                 <p className="order__total mr-10">
                   <span className="order__price text text_type_digits-medium">610</span>
@@ -48,7 +44,6 @@ class App extends React.Component {
             </div>
 
           </div>
-
         </main>
       </div>
     )

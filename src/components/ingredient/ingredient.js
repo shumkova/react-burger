@@ -11,7 +11,7 @@ class Ingredient extends React.Component {
         <div className={styles.ingredient}>
           <div className={styles.wrapper}>
             <picture>
-              <source media="(max-width: 767px)" srcSet={data["image_mobile"]}/>
+              <source media="(max-width: 767px)" srcSet={data['image_mobile']}/>
               <img className={styles.img} src={data.image} alt={data.name}/>
             </picture>
           </div>
