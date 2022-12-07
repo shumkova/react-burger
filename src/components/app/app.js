@@ -3,7 +3,8 @@ import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from "../modal/modal";
+import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details';
 
 const URL = 'https://norma.nomoreparties.space/api/ingredients';
 
@@ -15,11 +16,12 @@ const App = () => {
 
   const [orderModal, setOrderModal] = React.useState(false);
 
-  const showOrderModal = () => {
+  const showOrderModal = (evt) => {
+    evt.preventDefault();
     setOrderModal(true);
   }
 
-  const onOrderModalCLose = () => {
+  const closeOrderModal = () => {
     setOrderModal(false);
   }
 
@@ -65,7 +67,11 @@ const App = () => {
                     </Button>
                   </div>
 
-                  {orderModal && <Modal onCLose={onOrderModalCLose}/>}
+                  {orderModal && (
+                    <Modal onClose={closeOrderModal}>
+                      <OrderDetails />
+                    </Modal>
+                  )}
                 </div>
               </div>
             </>

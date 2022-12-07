@@ -4,7 +4,8 @@ import styles from './burger-ingredients.module.css';
 import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 import {ingredientPropTypes} from '../../utils/proptypes';
 import IngredientTypes from '../ingredient-types/ingredient-types';
-import Modal from "../modal/modal";
+import Modal from '../modal/modal';
+import IngredientDetails from '../ingredient-details/ingredient-details';
 
 const BurgerIngredients = (props) => {
   const {ingredients} = props;
@@ -72,12 +73,18 @@ const BurgerIngredients = (props) => {
           Начинки
         </Tab>
       </div>
+
       <div className={styles.sections} id="ingredients" ref={scrollable} onScroll={onSectionScroll} onClick={onIngredientsCLick}>
         <IngredientTypes type="bun" title="Булки" sectionList={buns}/>
         <IngredientTypes type="sauce" title="Соусы" sectionList={sauces}/>
         <IngredientTypes type="main" title="Начинки" sectionList={main}/>
       </div>
-      {modal && ingredientDetails && <Modal isOpen={true} onCLose={onModalClose} title="Детали ингредиента"/>}
+
+      {modal && ingredientDetails &&
+        <Modal onClose={onModalClose} title="Детали ингредиента">
+          <IngredientDetails data={ingredientDetails}/>
+        </Modal>
+      }
     </div>
   )
 }
