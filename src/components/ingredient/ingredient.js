@@ -8,7 +8,7 @@ const Ingredient = (props) => {
 
   return (
     (
-      <div className={styles.ingredient}>
+      <div className={styles.ingredient} data-ingredient={data['_id']}>
         <div className={styles.wrapper}>
           <picture>
             <source media="(max-width: 767px)" srcSet={data['image_mobile']}/>

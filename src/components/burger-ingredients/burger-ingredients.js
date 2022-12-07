@@ -4,23 +4,33 @@ import styles from './burger-ingredients.module.css';
 import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
 import {ingredientPropTypes} from '../../utils/proptypes';
 import IngredientTypes from '../ingredient-types/ingredient-types';
+import Modal from "../modal/modal";
 
 const BurgerIngredients = (props) => {
-  const [state, setState] = React.useState({
-    current: 'bun'
-  })
+  const {ingredients} = props;
+
+  const [currentTab, setCurrentTab] = React.useState('bun');
+  const [ingredientDetails, setIngredientDetails] = React.useState(null);
+  const [modal, setModal] = React.useState(false);
 
   const scrollable = React.createRef();
 
-  const setCurrentTab = (tabName) => {
-    setState({
-      ...state,
-      current: tabName,
-    })
+  const onIngredientsCLick = (e) => {
+    const ingredientEl = e.target.closest('[data-ingredient]');
+
+    if (ingredientEl) {
+      setIngredientDetails(ingredients.find((item) => item['_id'] === ingredientEl.dataset.ingredient));
+      setModal(true);
+    }
+  }
+
+  const onModalClose = () => {
+    setModal(false);
+    setIngredientDetails(null);
   }
 
   const checkTab = (tabName) => {
-    return state.current !== tabName;
+    return currentTab !== tabName;
   }
 
   const onSectionScroll = () => {
@@ -45,8 +55,6 @@ const BurgerIngredients = (props) => {
     }
   }
 
-  const {ingredients} = props;
-
   const buns = ingredients.filter((item) => item.type === 'bun');
   const main = ingredients.filter((item) => item.type === 'main');
   const sauces = ingredients.filter((item) => item.type === 'sauce');
@@ -54,27 +62,29 @@ const BurgerIngredients = (props) => {
   return (
     <div className={styles.ingredients}>
       <div className={`${styles.tabs} mb-10`}>
-        <Tab value="bun" active={state.current === 'bun'} onClick={onTabClick}>
+        <Tab value="bun" active={currentTab === 'bun'} onClick={onTabClick}>
           Булки
         </Tab>
-        <Tab value="sauce" active={state.current === 'sauce'} onClick={onTabClick}>
+        <Tab value="sauce" active={currentTab === 'sauce'} onClick={onTabClick}>
           Соусы
         </Tab>
-        <Tab value="main" active={state.current === 'main'} onClick={onTabClick}>
+        <Tab value="main" active={currentTab === 'main'} onClick={onTabClick}>
           Начинки
         </Tab>
       </div>
-      <div className={styles.sections} id="ingredients" ref={scrollable} onScroll={onSectionScroll}>
+      <div className={styles.sections} id="ingredients" ref={scrollable} onScroll={onSectionScroll} onClick={onIngredientsCLick}>
         <IngredientTypes type="bun" title="Булки" sectionList={buns}/>
         <IngredientTypes type="sauce" title="Соусы" sectionList={sauces}/>
         <IngredientTypes type="main" title="Начинки" sectionList={main}/>
       </div>
+      {modal && ingredientDetails && <Modal isOpen={true} onCLose={onModalClose} title="Детали ингредиента"/>}
     </div>
   )
 }
 
 BurgerIngredients.propTypes = {
   ingredients: PropTypes.arrayOf(ingredientPropTypes),
+  onIngredientClick: PropTypes.func
 }
 
 export default BurgerIngredients;

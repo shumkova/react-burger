@@ -1,9 +1,9 @@
 import React from 'react';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import data from '../../utils/data.json';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import Modal from "../modal/modal";
 
 const URL = 'https://norma.nomoreparties.space/api/ingredients';
 
@@ -13,11 +13,20 @@ const App = () => {
     chosen: {},
   })
 
+  const [orderModal, setOrderModal] = React.useState(false);
+
+  const showOrderModal = () => {
+    setOrderModal(true);
+  }
+
+  const onOrderModalCLose = () => {
+    setOrderModal(false);
+  }
+
   React.useEffect(() => {
     fetch(URL)
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setState({
           ...state,
           ingredients: res.data,
@@ -51,12 +60,13 @@ const App = () => {
                       <span className="order__price text text_type_digits-medium">610</span>
                       <CurrencyIcon type={"primary"} />
                     </p>
-                    <Button htmlType="button" type="primary" size="large">
+                    <Button htmlType="button" type="primary" size="large" onClick={showOrderModal}>
                       Оформить заказ
                     </Button>
                   </div>
-                </div>
 
+                  {orderModal && <Modal onCLose={onOrderModalCLose}/>}
+                </div>
               </div>
             </>
           )
@@ -64,7 +74,6 @@ const App = () => {
             <>Извниите, произошла ошибка</>
           )
         }
-
       </main>
     </div>
   )
