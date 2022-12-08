@@ -8,7 +8,7 @@ const IngredientTypes = (props) => {
   const {type, title, sectionList} = props;
 
   return (
-    <section className={styles.type} data-section={type}>
+    <section className={styles.type} data-ingredient-type={type}>
       <h2 className={`${styles.title} text text_type_main-medium mb-6`}>{title}</h2>
       <ul className={`${styles.list} pl-4 pr-2`}>
         {sectionList.map((item, index) => {
@@ -24,9 +24,9 @@ const IngredientTypes = (props) => {
 }
 
 IngredientTypes.propTypes = {
-  type: PropTypes.string,
-  title: PropTypes.string,
-  sectionList: PropTypes.arrayOf(ingredientPropTypes)
+  type: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  sectionList: PropTypes.arrayOf(ingredientPropTypes).isRequired
 }
 
 export default IngredientTypes;

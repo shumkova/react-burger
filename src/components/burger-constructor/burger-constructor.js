@@ -8,7 +8,7 @@ const BurgerConstructor = (props) => {
   const {bun, inner} = props;
   let innerElements = null;
 
-  if (inner.length) {
+  if (inner.length > 0) {
     innerElements = inner.map((item) => {
       return (
         <li className={styles.item} key={item['_id']}>

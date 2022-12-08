@@ -21,7 +21,7 @@ const NavLink = (props) => {
 }
 
 NavLink.propTypes = {
-  type: PropTypes.string,
+  type: PropTypes.string.isRequired,
   isActive: PropTypes.bool,
   text: PropTypes.string.isRequired
 }

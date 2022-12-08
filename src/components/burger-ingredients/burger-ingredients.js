@@ -14,7 +14,28 @@ const BurgerIngredients = (props) => {
   const [ingredientDetails, setIngredientDetails] = React.useState(null);
   const [modal, setModal] = React.useState(false);
 
+  const buns = ingredients.filter((item) => item.type === 'bun');
+  const main = ingredients.filter((item) => item.type === 'main');
+  const sauces = ingredients.filter((item) => item.type === 'sauce');
+
   const scrollable = React.createRef();
+
+  const listenSectionsScroll = () => {
+    const sections = document.querySelectorAll('[data-ingredient-type]');
+
+    scrollable.current.addEventListener('scroll', (evt) => {
+      const scrollableTop = evt.target.offsetTop + evt.target.scrollTop;
+
+      sections.forEach((section, index) => {
+        const sectionTop = section.offsetTop;
+        if (sectionTop <= scrollableTop && (sectionTop + section.offsetHeight) > scrollableTop) {
+          setCurrentTab(section.dataset.ingredientType);
+        }
+      })
+    })
+  }
+
+  React.useEffect(listenSectionsScroll, []);
 
   const onIngredientsCLick = (e) => {
     const ingredientEl = e.target.closest('[data-ingredient]');
@@ -34,31 +55,13 @@ const BurgerIngredients = (props) => {
     return currentTab !== tabName;
   }
 
-  const onSectionScroll = () => {
-    const parentTop = scrollable.current.offsetTop + scrollable.current.scrollTop;
-    const sections = document.querySelectorAll('[data-section]');
-
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop - 20;
-      if (sectionTop <= parentTop && (sectionTop + section.offsetHeight) > parentTop) {
-        if (checkTab(section.dataset.section)) {
-          setCurrentTab(section.dataset.section);
-        }
-      }
-    })
-  }
-
   const onTabClick = (tabName) => {
-    const section = document.querySelector(`[data-section = ${tabName}]`);
+    const section = document.querySelector(`[data-ingredient-type = ${tabName}]`);
     section.scrollIntoView(({behavior: 'smooth'}));
     if (checkTab(tabName)) {
       setCurrentTab(tabName);
     }
   }
-
-  const buns = ingredients.filter((item) => item.type === 'bun');
-  const main = ingredients.filter((item) => item.type === 'main');
-  const sauces = ingredients.filter((item) => item.type === 'sauce');
 
   return (
     <div className={styles.ingredients}>
@@ -74,7 +77,7 @@ const BurgerIngredients = (props) => {
         </Tab>
       </div>
 
-      <div className={styles.sections} id="ingredients" ref={scrollable} onScroll={onSectionScroll} onClick={onIngredientsCLick}>
+      <div className={styles.sections} id="ingredients" ref={scrollable} onClick={onIngredientsCLick}>
         <IngredientTypes type="bun" title="Булки" sectionList={buns}/>
         <IngredientTypes type="sauce" title="Соусы" sectionList={sauces}/>
         <IngredientTypes type="main" title="Начинки" sectionList={main}/>
@@ -90,8 +93,7 @@ const BurgerIngredients = (props) => {
 }
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropTypes),
-  onIngredientClick: PropTypes.func
+  ingredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
 }
 
 export default BurgerIngredients;
