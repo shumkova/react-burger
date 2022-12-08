@@ -9,8 +9,8 @@ const IngredientDetails = (props) => {
     <div className={styles.detail}>
       <div className={styles.wrapper}>
         <picture>
-          <source media="(max-width: 767px)" srcSet={data['image_mobile']}/>
-          <img className={styles.img} src={data.image} alt={data.name}/>
+          <source media="(max-width: 767px)" srcSet={data.image}/>
+          <img className={styles.img} src={data['image_large']} alt={data.name}/>
         </picture>
       </div>
       <h3 className={`${styles.title} text text_type_main-medium mt-4 mb-8`}>{data.name}</h3>
