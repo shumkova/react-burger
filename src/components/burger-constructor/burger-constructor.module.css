@@ -1,0 +1,48 @@
+.burgerConstructor {
+
+}
+
+.inner {
+    margin: 0;
+    /*min-height: 380px;*/
+    max-height: calc(100vh - 564px);
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    list-style: none;
+    padding-left: 0;
+    overflow: auto;
+}
+
+.inner::-webkit-scrollbar {
+
+    width: 8px;
+}
+
+.inner::-webkit-scrollbar-track {
+    background-color: #2F2F37;
+}
+
+.inner::-webkit-scrollbar-thumb {
+    background: #8585AD;
+    border: 3px solid #8585AD;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.drug {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+}
+
