@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styles from './burger-constructor.module.css';
 import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import {ingredientPropTypes} from '../../utils/proptypes';
+import {ConstructorContext} from '../../services/ingredientsContext';
 
-const BurgerConstructor = (props) => {
-  const {bun, inner} = props;
+const BurgerConstructor = () => {
+  const { constructorIngredients } = useContext(ConstructorContext);
+  const { bun, filling } = constructorIngredients;
+
   let innerElements = null;
 
-  if (inner.length > 0) {
-    innerElements = inner.map((item) => {
+  if (filling.length > 0) {
+    innerElements = filling.map((item) => {
       return (
         <li className={styles.item} key={item['_id']}>
           <button className={styles.drug} type="button"><DragIcon type="primary" /></button>
@@ -54,7 +57,7 @@ const BurgerConstructor = (props) => {
 
 BurgerConstructor.propTypes = {
   bun: ingredientPropTypes,
-  inner: PropTypes.arrayOf(ingredientPropTypes)
+  filling: PropTypes.arrayOf(ingredientPropTypes)
 }
 
 export default BurgerConstructor;

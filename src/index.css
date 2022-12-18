@@ -65,7 +65,7 @@ body {
   max-height: calc(100vh - 268px);
 }
 
-.order__footer {
+.order__bottom {
   display: flex;
   justify-content: flex-end;
 
