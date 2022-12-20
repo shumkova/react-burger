@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 268px);
+}
+
+.bottom {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.total {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.total svg {
+    width: 36px;
+    height: 36px;
+}

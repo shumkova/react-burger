@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 import styles from './order-details.module.css';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 const OrderDetails = ({number}) => {
   return (
@@ -15,7 +15,7 @@ const OrderDetails = ({number}) => {
 };
 
 OrderDetails.propTypes = {
-  number: PropTypes.number,
+  number: PropTypes.number.isRequired,
 }
 
 export default OrderDetails;

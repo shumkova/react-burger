@@ -8,7 +8,7 @@ const getIngredients = () => {
   return fetch(`${baseUrl}/ingredients`).then(checkResponse)
 }
 
-const postOrder = (ingredientsArr) => {
+const placeOrderRequest = (ingredientsArr) => {
   return fetch(`${baseUrl}/orders`, {
     method: 'POST',
     headers: {
@@ -20,4 +20,4 @@ const postOrder = (ingredientsArr) => {
   }).then(checkResponse)
 }
 
-export {getIngredients, postOrder};
+export {getIngredients, placeOrderRequest};

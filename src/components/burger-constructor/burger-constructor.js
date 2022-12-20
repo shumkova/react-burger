@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import styles from './burger-constructor.module.css';
 import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -23,39 +23,40 @@ const BurgerConstructor = () => {
   }
 
   return (
-    <div className={`${styles.burgerConstructor} pl-4 pb-5`}>
-        {bun && (
-          <ConstructorElement
-            type="top"
-            isLocked={true}
-            text={bun.name}
-            price={bun.price}
-            thumbnail={bun.image}
-            extraClass={'ml-8 mb-4'}
-          />
-        )}
+    <div className="pl-4 pb-5">
+      {bun && (
+        <ConstructorElement
+          type="top"
+          isLocked={true}
+          text={bun.name}
+          price={bun.price}
+          thumbnail={bun.image}
+          extraClass={'ml-8 mb-4'}
+        />
+      )}
 
-        {innerElements && (
-          <ul className={`${styles.inner}`}>
-            {innerElements}
-          </ul>
-        )}
+      {innerElements && (
+        <ul className={`${styles.inner}`}>
+          {innerElements}
+        </ul>
+      )}
 
-        {bun && (
-          <ConstructorElement
-            type="bottom"
-            isLocked={true}
-            text={bun.name}
-            price={bun.price}
-            thumbnail={bun.image}
-            extraClass={'ml-8 mt-4'}
-          />
-        )}
+      {bun && (
+        <ConstructorElement
+          type="bottom"
+          isLocked={true}
+          text={bun.name}
+          price={bun.price}
+          thumbnail={bun.image}
+          extraClass={'ml-8 mt-4'}
+        />
+      )}
     </div>
   )
 }
 
 BurgerConstructor.propTypes = {
+  constructorIngredients: PropTypes.object,
   bun: ingredientPropTypes,
   filling: PropTypes.arrayOf(ingredientPropTypes)
 }

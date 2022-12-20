@@ -1,83 +1,49 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
-import {getIngredients, postOrder} from '../../services/burger-api';
+import {getIngredients} from '../../services/burger-api';
 import ErrorBoundary from '../error-boundary/error-doundary';
 import ErrorMessage from '../error-message/error-message';
 import {ConstructorContext} from '../../services/ingredientsContext';
+import {Loader} from '../../ui/loader/loader';
+import Cart from '../cart/cart';
+import {ApiErrorContext} from '../../services/apiErrorContext';
 
 const App = () => {
-  const [ingredients, setIngredients] = React.useState([])
+  const [ingredients, setIngredients] = useState([])
 
-  const [constructorIngredients, setConstructorIngredients] = React.useState({
+  const [ constructorIngredients, setConstructorIngredients ] = useState({
     bun: null,
     filling: []
-  })
+  });
 
-  const [orderSum, setOrderSum] = React.useState(0);
-  const [apiError, setApiError] = React.useState(null);
-  const [orderModal, setOrderModal] = React.useState(false);
-  const [orderNumber, setOrderNumber] = React.useState(null);
+  const [ apiError, setApiError ] = useState();
+  const [ ingredientsRequest, setIngredientsRequest ] = useState(false);
+  const [ ingredientsFailed, setIngredientsFailed ] = useState(false);
 
-  const countSum = (data) => {
-    const { bun, filling } = data;
-    let sum = 0;
-
-    if (bun) {
-      sum += bun.price*2;
-    }
-
-    if (filling.length > 0) {
-      sum += filling.reduce((price, item) => price + item.price, 0);
-    }
-
-    return sum;
-  }
-
-  const showOrderModal = (evt) => {
-    setOrderModal(true);
-  }
-
-  const closeOrderModal = () => {
-    setOrderModal(false);
-  }
-
-  const placeOrder = (evt) => {
-    evt.preventDefault();
-    const ids = [constructorIngredients.bun['_id'], ...constructorIngredients.filling.map((item) => item['_id'])];
-    postOrder(ids)
-      .then((res) => {
-        setOrderNumber(res.order.number);
-        showOrderModal();
-      })
-      .catch((err) => {
-        setApiError(err.message);
-      })
-  }
-
-  React.useEffect(() => {
+  useEffect(() => {
+    setIngredientsRequest(true);
     getIngredients()
       .then((res) => {
-        setApiError(null);
-        setIngredients(res.data)
-        setConstructorIngredients({
-          bun: res.data.find((item) => item.type === 'bun'),
-          filling: res.data.filter((item) => item.type !== 'bun').slice(0, Math.floor(Math.random()*res.data.length)),
-        })
-
+        if (res && res.success) {
+          setIngredients(res.data)
+          setConstructorIngredients({
+            bun: res.data.find((item) => item.type === 'bun'),
+            filling: res.data.filter((item) => item.type !== 'bun').slice(0, Math.floor(Math.random()*res.data.length)),
+          });
+          setIngredientsRequest(false);
+          setIngredientsFailed(false);
+        } else {
+          setIngredientsRequest(false);
+          setIngredientsFailed(true);
+        }
       })
       .catch((err) => {
         setApiError(err.message);
+        setIngredientsRequest(false);
+        setIngredientsFailed(true);
       })
   }, [])
-
-  React.useEffect(() => {
-    setOrderSum(countSum(constructorIngredients));
-  }, [constructorIngredients]);
 
   return (
     <ErrorBoundary>
@@ -85,36 +51,22 @@ const App = () => {
         <AppHeader activeLink={'main'}/>
         <main className="main container pt-10">
 
-          {apiError && <ErrorMessage /> }
+          {ingredientsFailed && <ErrorMessage /> }
 
-          {ingredients.length > 0 &&
+          {ingredientsRequest ? (
+            <Loader size="large"/>
+          ) :
+            ingredients.length > 0 &&
             (
               <>
                 <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
                 <div className="two-columns">
                   <BurgerIngredients ingredients={ingredients}/>
-
-                  <div className="order">
-                    <ConstructorContext.Provider value={{constructorIngredients, setConstructorIngredients}}>
-                      <BurgerConstructor />
-
-                      <div className="order__bottom mt-5 pr-4">
-                        <p className="order__total mr-10">
-                          <span className="order__price text text_type_digits-medium">{orderSum}</span>
-                          <CurrencyIcon type={"primary"} />
-                        </p>
-                        <Button htmlType="button" type="primary" size="large" onClick={placeOrder}>
-                          Оформить заказ
-                        </Button>
-                      </div>
-                    </ConstructorContext.Provider>
-
-                    {orderModal && (
-                      <Modal onClose={closeOrderModal}>
-                        <OrderDetails number={orderNumber}/>
-                      </Modal>
-                    )}
-                  </div>
+                  <ConstructorContext.Provider value={{ constructorIngredients, setConstructorIngredients }}>
+                    <ApiErrorContext.Provider value={{ apiError, setApiError }}>
+                      <Cart />
+                    </ApiErrorContext.Provider>
+                  </ConstructorContext.Provider>
                 </div>
               </>
             )

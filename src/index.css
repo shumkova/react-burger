@@ -35,14 +35,8 @@ body {
 .page {
   display: flex;
   flex-direction: column;
-  /*max-height: 100vh;*/
   box-sizing: border-box;
   padding: 40px;
-}
-
-.main {
-  /*max-height: calc(100vh - 128px);*/
-  /*overflow: hidden;*/
 }
 
 .container {
@@ -57,31 +51,4 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px;
-}
-
-.order {
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 268px);
-}
-
-.order__bottom {
-  display: flex;
-  justify-content: flex-end;
-
-}
-
-.order__total {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.order__price {
-
-}
-
-.order__total svg {
-  width: 36px;
-  height: 36px;
 }
