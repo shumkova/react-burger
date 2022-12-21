@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {ConstructorContext} from '../../services/ingredientsContext';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
@@ -6,15 +6,14 @@ import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import {placeOrderRequest} from '../../services/burger-api';
 import {ApiErrorContext} from '../../services/apiErrorContext';
-import PropTypes from 'prop-types';
 import styles from './cart.module.css';
+import {constructorIngredientsPropTypes} from "../../utils/proptypes";
 
 const Cart = () => {
   const { constructorIngredients } = useContext(ConstructorContext);
   const { setApiError } = useContext(ApiErrorContext);
   const [orderModal, setOrderModal] = useState(false);
   const [orderNumber, setOrderNumber] = useState(null);
-  const [orderSum, setOrderSum] = useState(0);
 
   const [orderRequest, setOrderRequest] = useState(false);
   const [orderFailed, setOrderFailed] = useState(false);
@@ -42,9 +41,13 @@ const Cart = () => {
     return sum;
   }
 
+  const orderSum = useMemo(() => {
+    countSum(constructorIngredients);
+  }, [constructorIngredients])
+
   const placeOrder = (evt) => {
     evt.preventDefault();
-    const ids = [constructorIngredients.bun['_id'], ...constructorIngredients.filling.map((item) => item['_id'])];
+    const ids = [constructorIngredients.bun['_id'], ...constructorIngredients.filling.map((item) => item['_id']), constructorIngredients.bun['_id']];
     setOrderRequest(true);
     placeOrderRequest(ids)
       .then((res) => {
@@ -66,16 +69,6 @@ const Cart = () => {
       })
   }
 
-  const burgerConstructor = useMemo(
-    () => {
-      return (<BurgerConstructor />);
-    }, [constructorIngredients]
-  );
-
-  useEffect(() => {
-    setOrderSum(countSum(constructorIngredients));
-  }, [constructorIngredients]);
-
   const modalContent = useMemo(
     () => {
     return orderFailed ? (
@@ -90,7 +83,7 @@ const Cart = () => {
 
   return (
     <div className={styles.container}>
-      {burgerConstructor}
+      <BurgerConstructor constructorIngredients={constructorIngredients} />
 
       <div className={`${styles.bottom} mt-5 pr-4`}>
         <p className={`${styles.total} mr-10`}>
@@ -112,7 +105,7 @@ const Cart = () => {
 }
 
 Cart.propTypes = {
-  constructorIngredients: PropTypes.object,
+  constructorIngredients: constructorIngredientsPropTypes,
 }
 
 export default Cart;

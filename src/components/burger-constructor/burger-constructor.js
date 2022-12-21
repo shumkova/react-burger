@@ -1,12 +1,10 @@
-import React, {useContext, useMemo} from 'react';
+import React, {memo} from 'react';
 import PropTypes from 'prop-types';
 import styles from './burger-constructor.module.css';
 import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {ingredientPropTypes} from '../../utils/proptypes';
-import {ConstructorContext} from '../../services/ingredientsContext';
+import {constructorIngredientsPropTypes} from '../../utils/proptypes';
 
-const BurgerConstructor = () => {
-  const { constructorIngredients } = useContext(ConstructorContext);
+const BurgerConstructor = memo(({ constructorIngredients }) => {
   const { bun, filling } = constructorIngredients;
 
   let innerElements = null;
@@ -53,12 +51,10 @@ const BurgerConstructor = () => {
       )}
     </div>
   )
-}
+})
 
 BurgerConstructor.propTypes = {
-  constructorIngredients: PropTypes.object,
-  bun: ingredientPropTypes,
-  filling: PropTypes.arrayOf(ingredientPropTypes)
+  constructorIngredients: constructorIngredientsPropTypes,
 }
 
 export default BurgerConstructor;
