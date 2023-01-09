@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 const AppHeader = ({activeLink}) => {
   return (
-    <header className={styles.header}>
+    <header className={styles.wrapper}>
       <div className={`${styles.container} pt-4 pb-4 `}>
         <nav>
           <ul className={styles.nav__list}>

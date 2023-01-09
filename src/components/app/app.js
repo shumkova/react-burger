@@ -1,48 +1,47 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
-import {getIngredients} from '../../utils/burger-api';
+import {getIngredients} from '../../services/burger-api';
 import ErrorBoundary from '../error-boundary/error-doundary';
 import ErrorMessage from '../error-message/error-message';
+import {ConstructorContext} from '../../services/ingredientsContext';
+import {Loader} from '../../ui/loader/loader';
+import Cart from '../cart/cart';
+import {ApiErrorContext} from '../../services/apiErrorContext';
 
 const App = () => {
-  const [state, setState] = React.useState({
-    ingredients: [],
-    chosen: {},
-  })
+  const [ingredients, setIngredients] = useState([])
 
-  const [apiError, setApiError] = React.useState(null);
+  const [ constructorIngredients, setConstructorIngredients ] = useState({
+    bun: null,
+    filling: []
+  });
 
-  const [orderModal, setOrderModal] = React.useState(false);
+  const [ apiError, setApiError ] = useState();
+  const [ ingredientsRequest, setIngredientsRequest ] = useState(false);
+  const [ ingredientsFailed, setIngredientsFailed ] = useState(false);
 
-  const showOrderModal = (evt) => {
-    evt.preventDefault();
-    setOrderModal(true);
-  }
-
-  const closeOrderModal = () => {
-    setOrderModal(false);
-  }
-
-  React.useEffect(() => {
+  useEffect(() => {
+    setIngredientsRequest(true);
     getIngredients()
       .then((res) => {
-        setApiError(null);
-        setState({
-          ...state,
-          ingredients: res.data,
-          chosen: {
+        if (res && res.success) {
+          setIngredients(res.data)
+          setConstructorIngredients({
             bun: res.data.find((item) => item.type === 'bun'),
-            inner: res.data.filter((item) => item.type !== 'bun').slice(0, 3),
-          },
-        })
+            filling: res.data.filter((item) => item.type !== 'bun').slice(0, Math.floor(Math.random()*res.data.length)),
+          });
+          setIngredientsRequest(false);
+          setIngredientsFailed(false);
+        } else {
+          setIngredientsRequest(false);
+          setIngredientsFailed(true);
+        }
       })
       .catch((err) => {
         setApiError(err.message);
+        setIngredientsRequest(false);
+        setIngredientsFailed(true);
       })
   }, [])
 
@@ -52,33 +51,22 @@ const App = () => {
         <AppHeader activeLink={'main'}/>
         <main className="main container pt-10">
 
-          {apiError && <ErrorMessage /> }
+          {ingredientsFailed && <ErrorMessage /> }
 
-          {state.ingredients.length > 0 &&
+          {ingredientsRequest ? (
+            <Loader size="large"/>
+          ) :
+            ingredients.length > 0 &&
             (
               <>
                 <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
                 <div className="two-columns">
-                  <BurgerIngredients ingredients={state.ingredients}/>
-
-                  <div className="order">
-                    <BurgerConstructor bun={state.chosen.bun} inner={state.chosen.inner}/>
-                    <div className="order__footer mt-5 pr-4">
-                      <p className="order__total mr-10">
-                        <span className="order__price text text_type_digits-medium">610</span>
-                        <CurrencyIcon type={"primary"} />
-                      </p>
-                      <Button htmlType="button" type="primary" size="large" onClick={showOrderModal}>
-                        Оформить заказ
-                      </Button>
-                    </div>
-
-                    {orderModal && (
-                      <Modal onClose={closeOrderModal}>
-                        <OrderDetails />
-                      </Modal>
-                    )}
-                  </div>
+                  <BurgerIngredients ingredients={ingredients}/>
+                  <ConstructorContext.Provider value={{ constructorIngredients, setConstructorIngredients }}>
+                    <ApiErrorContext.Provider value={{ apiError, setApiError }}>
+                      <Cart />
+                    </ApiErrorContext.Provider>
+                  </ConstructorContext.Provider>
                 </div>
               </>
             )
