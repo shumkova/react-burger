@@ -1,11 +1,11 @@
-import React, {memo} from 'react';
-import PropTypes from 'prop-types';
+import React, { memo } from 'react';
 import styles from './burger-constructor.module.css';
-import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {constructorIngredientsPropTypes} from '../../utils/proptypes';
+import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { constructorIngredientsPropTypes } from '../../utils/proptypes';
+import { useSelector } from 'react-redux';
 
-const BurgerConstructor = memo(({ constructorIngredients }) => {
-  const { bun, filling } = constructorIngredients;
+const BurgerConstructor = memo(() => {
+  const { bun, filling } = useSelector(state => state.cart.constructorIngredients);
 
   let innerElements = null;
 

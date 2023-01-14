@@ -1,9 +1,10 @@
 import React from 'react';
 import styles from './ingredient-details.module.css';
-import {ingredientPropTypes} from '../../utils/proptypes';
+import { ingredientPropTypes } from '../../utils/proptypes';
+import { useSelector } from "react-redux";
 
-const IngredientDetails = (props) => {
-  const {data} = props;
+const IngredientDetails = () => {
+  const data = useSelector( (state) => state.burgerIngredients.ingredientDetails);
 
   return (
     <div className={styles.detail}>
@@ -37,7 +38,7 @@ const IngredientDetails = (props) => {
 }
 
 IngredientDetails.propTypes = {
-  data: ingredientPropTypes.isRequired,
+  data: ingredientPropTypes,
 };
 
 export default IngredientDetails;

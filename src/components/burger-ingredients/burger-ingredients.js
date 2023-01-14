@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from './burger-ingredients.module.css';
-import {Tab} from '@ya.praktikum/react-developer-burger-ui-components';
-import {ingredientPropTypes} from '../../utils/proptypes';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { ingredientPropTypes } from '../../utils/proptypes';
 import IngredientTypes from '../ingredient-types/ingredient-types';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
+import { useDispatch, useSelector } from 'react-redux';
+import { OPEN_DETAILS_MODAL, CLOSE_DETAILS_MODAL, TAB_SWITCH } from '../../services/actions';
 
-const BurgerIngredients = (props) => {
-  const {ingredients} = props;
+const BurgerIngredients = () => {
+  const dispatch = useDispatch();
 
-  const [currentTab, setCurrentTab] = React.useState('bun');
-  const [ingredientDetails, setIngredientDetails] = React.useState(null);
-  const [modal, setModal] = React.useState(false);
+  const { ingredients } = useSelector( (state) => state.app);
+  const { currentTab, modal } = useSelector( (state) => state.burgerIngredients);
+
+  const setCurrentTab = (tab) => {
+    dispatch({
+      type: TAB_SWITCH,
+      tab: tab,
+    })
+  }
 
   const buns = ingredients.filter((item) => item.type === 'bun');
   const main = ingredients.filter((item) => item.type === 'main');
@@ -22,6 +30,8 @@ const BurgerIngredients = (props) => {
 
   const listenSectionsScroll = () => {
     const sections = document.querySelectorAll('[data-ingredient-type]');
+
+    if (!scrollable.current) {return}
 
     scrollable.current.addEventListener('scroll', (evt) => {
       const scrollableTop = evt.target.offsetTop + evt.target.scrollTop;
@@ -35,20 +45,22 @@ const BurgerIngredients = (props) => {
     })
   }
 
-  React.useEffect(listenSectionsScroll, []);
+  useEffect(listenSectionsScroll, []);
 
-  const onIngredientsCLick = (e) => {
+  const onIngredientCLick = (e) => {
     const ingredientEl = e.target.closest('[data-ingredient]');
-
     if (ingredientEl) {
-      setIngredientDetails(ingredients.find((item) => item['_id'] === ingredientEl.dataset.ingredient));
-      setModal(true);
+      dispatch({
+        type: OPEN_DETAILS_MODAL,
+        ingredient: ingredients.find((item) => item['_id'] === ingredientEl.dataset.ingredient)
+      })
     }
   }
 
   const onModalClose = () => {
-    setModal(false);
-    setIngredientDetails(null);
+    dispatch({
+      type: CLOSE_DETAILS_MODAL,
+    })
   }
 
   const checkTab = (tabName) => {
@@ -63,29 +75,36 @@ const BurgerIngredients = (props) => {
     }
   }
 
+  const tabs = useMemo(() => (
+    <div className={`${styles.tabs} mb-10`}>
+      <Tab value="bun" active={currentTab === 'bun'} onClick={onTabClick}>
+        Булки
+      </Tab>
+      <Tab value="sauce" active={currentTab === 'sauce'} onClick={onTabClick}>
+        Соусы
+      </Tab>
+      <Tab value="main" active={currentTab === 'main'} onClick={onTabClick}>
+        Начинки
+      </Tab>
+    </div>
+  ), [currentTab]);
+
+  const content = useMemo(() => (
+    <div className={styles.sections} id="ingredients" ref={scrollable} onClick={onIngredientCLick}>
+      <IngredientTypes type="bun" title="Булки" sectionList={buns}/>
+      <IngredientTypes type="sauce" title="Соусы" sectionList={sauces}/>
+      <IngredientTypes type="main" title="Начинки" sectionList={main}/>
+    </div>
+  ), [ingredients])
+
   return (
     <div className={styles.ingredients}>
-      <div className={`${styles.tabs} mb-10`}>
-        <Tab value="bun" active={currentTab === 'bun'} onClick={onTabClick}>
-          Булки
-        </Tab>
-        <Tab value="sauce" active={currentTab === 'sauce'} onClick={onTabClick}>
-          Соусы
-        </Tab>
-        <Tab value="main" active={currentTab === 'main'} onClick={onTabClick}>
-          Начинки
-        </Tab>
-      </div>
+      {tabs}
+      {content}
 
-      <div className={styles.sections} id="ingredients" ref={scrollable} onClick={onIngredientsCLick}>
-        <IngredientTypes type="bun" title="Булки" sectionList={buns}/>
-        <IngredientTypes type="sauce" title="Соусы" sectionList={sauces}/>
-        <IngredientTypes type="main" title="Начинки" sectionList={main}/>
-      </div>
-
-      {modal && ingredientDetails &&
+      {modal &&
         <Modal onClose={onModalClose} title="Детали ингредиента">
-          <IngredientDetails data={ingredientDetails}/>
+          <IngredientDetails />
         </Modal>
       }
     </div>
@@ -93,7 +112,7 @@ const BurgerIngredients = (props) => {
 }
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
+  ingredients: PropTypes.arrayOf(ingredientPropTypes),
 }
 
 export default BurgerIngredients;

@@ -1,29 +1,21 @@
-import React, {useContext, useMemo, useState} from 'react';
-import {ConstructorContext} from '../../services/ingredientsContext';
+import React, { useMemo } from 'react';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
-import {placeOrderRequest} from '../../services/burger-api';
-import {ApiErrorContext} from '../../services/apiErrorContext';
 import styles from './cart.module.css';
-import {constructorIngredientsPropTypes} from "../../utils/proptypes";
+import {constructorIngredientsPropTypes} from '../../utils/proptypes';
+import { useDispatch, useSelector } from 'react-redux';
+import {CLOSE_ORDER_MODAL, placeOrder} from "../../services/actions";
 
 const Cart = () => {
-  const { constructorIngredients } = useContext(ConstructorContext);
-  const { setApiError } = useContext(ApiErrorContext);
-  const [orderModal, setOrderModal] = useState(false);
-  const [orderNumber, setOrderNumber] = useState(null);
-
-  const [orderRequest, setOrderRequest] = useState(false);
-  const [orderFailed, setOrderFailed] = useState(false);
-
-  const showOrderModal = (evt) => {
-    setOrderModal(true);
-  }
+  const dispatch = useDispatch();
+  const { constructorIngredients, orderModal, orderFailed, orderNumber } = useSelector(state => state.cart);
 
   const closeOrderModal = () => {
-    setOrderModal(false);
+    dispatch({
+      type: CLOSE_ORDER_MODAL
+    })
   }
 
   const countSum = (data) => {
@@ -45,28 +37,10 @@ const Cart = () => {
     countSum(constructorIngredients);
   }, [constructorIngredients])
 
-  const placeOrder = (evt) => {
+  const onOrderClick = (evt) => {
     evt.preventDefault();
     const ids = [constructorIngredients.bun['_id'], ...constructorIngredients.filling.map((item) => item['_id']), constructorIngredients.bun['_id']];
-    setOrderRequest(true);
-    placeOrderRequest(ids)
-      .then((res) => {
-        if (res && res.success) {
-          setOrderNumber(res.order.number);
-          setOrderRequest(false);
-          setOrderFailed(false);
-        } else {
-          setOrderRequest(false);
-          setOrderFailed(true);
-        }
-        showOrderModal();
-      })
-      .catch((err) => {
-        setApiError(err.message);
-        setOrderRequest(false);
-        setOrderFailed(true);
-        showOrderModal();
-      })
+    dispatch(placeOrder(ids));
   }
 
   const modalContent = useMemo(
@@ -83,14 +57,14 @@ const Cart = () => {
 
   return (
     <div className={styles.container}>
-      <BurgerConstructor constructorIngredients={constructorIngredients} />
+      <BurgerConstructor />
 
       <div className={`${styles.bottom} mt-5 pr-4`}>
         <p className={`${styles.total} mr-10`}>
           <span className="text text_type_digits-medium">{orderSum}</span>
           <CurrencyIcon type={"primary"} />
         </p>
-        <Button htmlType="button" type="primary" size="large" onClick={placeOrder}>
+        <Button htmlType="button" type="primary" size="large" onClick={onOrderClick}>
           Оформить заказ
         </Button>
       </div>
