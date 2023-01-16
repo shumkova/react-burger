@@ -7,8 +7,10 @@ import styles from './cart.module.css';
 import {constructorIngredientsPropTypes} from '../../utils/proptypes';
 import { useDispatch, useSelector } from 'react-redux';
 import {CLOSE_ORDER_MODAL, placeOrder} from "../../services/actions";
+import PropTypes from "prop-types";
 
-const Cart = () => {
+const Cart = (props) => {
+  const { onDropHandler } = props;
   const dispatch = useDispatch();
   const { constructorIngredients, orderModal, orderFailed, orderNumber } = useSelector(state => state.cart);
 
@@ -57,7 +59,7 @@ const Cart = () => {
 
   return (
     <div className={styles.container}>
-      <BurgerConstructor />
+      <BurgerConstructor onDropHandler={onDropHandler}/>
 
       <div className={`${styles.bottom} mt-5 pr-4`}>
         <p className={`${styles.total} mr-10`}>
@@ -80,6 +82,7 @@ const Cart = () => {
 
 Cart.propTypes = {
   constructorIngredients: constructorIngredientsPropTypes,
+  onDropHandler: PropTypes.func.isRequired
 }
 
 export default Cart;

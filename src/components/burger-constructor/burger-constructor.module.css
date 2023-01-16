@@ -1,6 +1,30 @@
+.container {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.container_empty {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px;
+
+    border-radius: 30px;
+    border: 2px solid;
+    border-color: var(--colors-interface-accent);
+
+    text-align: center;
+}
+
+.element {
+    flex-grow: 0;
+}
+
 .inner {
     margin: 0;
-    /*min-height: 380px;*/
     max-height: calc(100vh - 564px);
 
     display: flex;
@@ -12,7 +36,6 @@
 }
 
 .inner::-webkit-scrollbar {
-
     width: 8px;
 }
 

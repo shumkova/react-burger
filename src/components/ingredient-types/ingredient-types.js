@@ -14,7 +14,7 @@ const IngredientTypes = (props) => {
         {sectionList.map((item, index) => {
           return (
             <li className={styles.item} key={item['_id']} tabIndex={0}>
-              <Ingredient data={item} />
+              <Ingredient data={item}/>
             </li>
           )
         })}
@@ -26,7 +26,7 @@ const IngredientTypes = (props) => {
 IngredientTypes.propTypes = {
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  sectionList: PropTypes.arrayOf(ingredientPropTypes).isRequired
+  sectionList: PropTypes.arrayOf(ingredientPropTypes).isRequired,
 }
 
 export default IngredientTypes;

@@ -5,8 +5,15 @@ import ErrorBoundary from '../error-boundary/error-doundary';
 import ErrorMessage from '../error-message/error-message';
 import { Loader } from '../../ui/loader/loader';
 import Cart from '../cart/cart';
-import { getIngredients } from '../../services/actions';
+import {
+  DECREASE_INGREDIENT_AMOUNT,
+  getIngredients,
+  INCREASE_INGREDIENT_AMOUNT,
+  ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR
+} from '../../services/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -15,6 +22,36 @@ const App = () => {
   useEffect(() => {
     dispatch(getIngredients());
   }, [])
+
+  const handleDrop = (draggableItem) => {
+    dispatch({
+      type: INCREASE_INGREDIENT_AMOUNT,
+      id: draggableItem.id
+    });
+
+    const ingredient = ingredients.find((item) => item['_id'] === draggableItem.id);
+
+    if (ingredient.type === 'bun') {
+      const previousBun = ingredients.find((item) => item.type === 'bun' && item['__v'] > 0);
+
+      dispatch({
+        type: ADD_BUN_TO_CONSTRUCTOR,
+        bun: ingredient
+      })
+
+      if (!previousBun) return;
+
+      dispatch({
+        type: DECREASE_INGREDIENT_AMOUNT,
+        id: previousBun['_id']
+      });
+    } else {
+      dispatch({
+        type: ADD_FILLING_TO_CONSTRUCTOR,
+        ingredient
+      })
+    }
+  }
 
   return (
     <ErrorBoundary>
@@ -33,8 +70,10 @@ const App = () => {
               <>
                 <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
                 <div className="two-columns">
-                  <BurgerIngredients />
-                  <Cart />
+                  <DndProvider backend={HTML5Backend}>
+                    <BurgerIngredients />
+                    <Cart onDropHandler={handleDrop}/>
+                  </DndProvider>
                 </div>
               </>
             )
