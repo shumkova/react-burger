@@ -6,11 +6,11 @@ import ErrorMessage from '../error-message/error-message';
 import { Loader } from '../../ui/loader/loader';
 import Cart from '../cart/cart';
 import {
-  DECREASE_INGREDIENT_AMOUNT,
   getIngredients,
-  INCREASE_INGREDIENT_AMOUNT,
-  ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR
+  DECREASE_INGREDIENT_AMOUNT,
+  INCREASE_INGREDIENT_AMOUNT
 } from '../../services/actions';
+import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../services/actions/burger-constructor'
 import { useDispatch, useSelector } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -48,7 +48,10 @@ const App = () => {
     } else {
       dispatch({
         type: ADD_FILLING_TO_CONSTRUCTOR,
-        ingredient
+        ingredient: {
+          ...ingredient,
+          key: `${ingredient['_id']}${ingredient['__v']}`
+        }
       })
     }
   }

@@ -1,16 +1,16 @@
-import React, { memo } from 'react';
+import React, {memo, useCallback} from 'react';
 import styles from './burger-constructor.module.css';
-import { ConstructorElement, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import { constructorIngredientsPropTypes } from '../../utils/proptypes';
 import {useDispatch, useSelector} from 'react-redux';
 import { useDrop } from 'react-dnd';
 import PropTypes from 'prop-types';
-import {DECREASE_INGREDIENT_AMOUNT, REMOVE_FILLING_FROM_CONSTRUCTOR} from "../../services/actions";
+import { UPDATE_FILLING_INGREDIENTS } from '../../services/actions/burger-constructor';
+import FillingIngredient from '../filling-ingredient/filling-ingredient';
 
 const BurgerConstructor = memo((props) => {
   const { onDropHandler } = props;
-  const { bun, filling } = useSelector(state => state.cart.constructorIngredients);
-
+  const { bun, filling } = useSelector(state => state.constructorIngredients);
   const dispatch = useDispatch();
 
   const [, dropTarget] = useDrop({
@@ -20,29 +20,32 @@ const BurgerConstructor = memo((props) => {
     }
   });
 
-  let innerElements = null;
+  const findFillingIngredient = useCallback(
+    (key) => {
+      const ingredient = filling.filter((item) => `${item.key}` === key)[0];
+      return {
+        ingredient,
+        index: filling.indexOf(ingredient),
+      }
+    },
+    [filling]
+  )
 
-  const removeIngredient = (id, index) => {
+  const moveFillingIngredient = (key, toIndex) => {
+    const { ingredient, index } = findFillingIngredient(key);
+    filling.splice(toIndex, 0, filling.splice(index, 1)[0]);
     dispatch({
-      type: REMOVE_FILLING_FROM_CONSTRUCTOR,
-      index
-    })
-
-    dispatch({
-      type: DECREASE_INGREDIENT_AMOUNT,
-      id
+      type: UPDATE_FILLING_INGREDIENTS,
+      ingredients: filling
     })
   }
 
+  let innerElements = null;
+
   if (filling.length > 0) {
     innerElements = filling.map((item, index) => {
-      const duplicates = filling.filter((filterItem) => filterItem['_id'] === item['_id']);
-
       return (
-        <li className={styles.item} key={duplicates.length > 1 ? `${item['_id']}-${index}` : item['_id'] }>
-          <button className={styles.drug} type="button"><DragIcon type="primary" /></button>
-          <ConstructorElement text={item.name} thumbnail={item.image} price={item.price} handleClose={() => removeIngredient(item['_id'], index)}/>
-        </li>
+        <FillingIngredient data={item} index={index} moveIngredient={moveFillingIngredient} findIngredient={findFillingIngredient} key={item.key}/>
       );
     })
   }
@@ -52,7 +55,7 @@ const BurgerConstructor = memo((props) => {
   return (
 
     <div className={`pl-4 pb-5 ${styles.container} ${!chosen ? styles.container_empty : ''}`} ref={dropTarget}>
-      {!chosen && <p className="text text_type_main-medium">Перетащите выбранные ингредиенты сюда</p>}
+      {!chosen && <p className="text text_type_main-default">Перетащите выбранные ингредиенты сюда</p>}
       {bun && (
         <ConstructorElement
           type="top"

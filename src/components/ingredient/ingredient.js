@@ -21,7 +21,7 @@ const Ingredient = (props) => {
       <div
         className={`${styles.container} ${chosenBun && styles.disabled}`}
         data-ingredient={id}
-        ref={dragRef}
+        {...(!chosenBun && { ref: dragRef })}
       >
         <div className={styles.info}>
           <div className={styles.wrapper}>

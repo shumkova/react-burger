@@ -1,6 +1,4 @@
-.ingredients {
-
-}
+.container {}
 
 .tabs {
     display: flex;
@@ -14,7 +12,6 @@
 }
 
 .sections::-webkit-scrollbar {
-
     width: 8px;
 }
 

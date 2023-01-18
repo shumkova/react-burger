@@ -4,7 +4,7 @@ import { ingredientPropTypes } from '../../utils/proptypes';
 import { useSelector } from "react-redux";
 
 const IngredientDetails = () => {
-  const data = useSelector( (state) => state.burgerIngredients.ingredientDetails);
+  const data = useSelector( (state) => state.menu.ingredientDetails);
 
   return (
     <div className={styles.detail}>

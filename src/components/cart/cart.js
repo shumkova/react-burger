@@ -1,18 +1,18 @@
 import React, { useMemo } from 'react';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
-import {Button, CurrencyIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import styles from './cart.module.css';
-import {constructorIngredientsPropTypes} from '../../utils/proptypes';
 import { useDispatch, useSelector } from 'react-redux';
-import {CLOSE_ORDER_MODAL, placeOrder} from "../../services/actions";
-import PropTypes from "prop-types";
+import { CLOSE_ORDER_MODAL, placeOrder } from '../../services/actions/order';
+import PropTypes from 'prop-types';
 
 const Cart = (props) => {
   const { onDropHandler } = props;
   const dispatch = useDispatch();
-  const { constructorIngredients, orderModal, orderFailed, order } = useSelector(state => state.cart);
+  const constructorIngredients = useSelector(state => state.constructorIngredients);
+  const { orderInfo, orderModal, orderFailed } = useSelector(state => state.order);
 
   const closeOrderModal = () => {
     dispatch({
@@ -36,8 +36,9 @@ const Cart = (props) => {
   }
 
   const orderSum = useMemo(() => {
-    countSum(constructorIngredients);
+    return countSum(constructorIngredients);
   }, [constructorIngredients])
+
 
   const onOrderClick = (evt) => {
     evt.preventDefault();
@@ -47,15 +48,15 @@ const Cart = (props) => {
 
   const modalContent = useMemo(
     () => {
-    return !orderFailed && order ? (
-      <OrderDetails number={order.number}/>
+    return !orderFailed && orderInfo ? (
+      <OrderDetails number={orderInfo.number}/>
     ) : (
       <>
         <p className="text text_type_main-medium mb-4">Произошла ошибка.</p>
         <p className="text text_type_main-default text_color_inactive">Попробуйте повторно оформить заказ.</p>
       </>
     );
-  }, [orderFailed, order]);
+  }, [orderFailed, orderInfo]);
 
   return (
     <div className={styles.container}>
@@ -66,7 +67,7 @@ const Cart = (props) => {
           <span className="text text_type_digits-medium">{orderSum}</span>
           <CurrencyIcon type={"primary"} />
         </p>
-        <Button htmlType="button" type="primary" size="large" onClick={onOrderClick}>
+        <Button htmlType="button" type="primary" size="large" onClick={onOrderClick} disabled={constructorIngredients.bun === null || !constructorIngredients.filling.length}>
           Оформить заказ
         </Button>
       </div>
@@ -81,7 +82,6 @@ const Cart = (props) => {
 }
 
 Cart.propTypes = {
-  constructorIngredients: constructorIngredientsPropTypes,
   onDropHandler: PropTypes.func.isRequired
 }
 

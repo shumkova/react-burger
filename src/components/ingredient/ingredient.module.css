@@ -4,10 +4,6 @@
     cursor: pointer;
 }
 
-.disabled {
-    pointer-events: none;
-}
-
 .disabled .info {
     opacity: 0.5;
 }

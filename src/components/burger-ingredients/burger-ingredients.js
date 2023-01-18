@@ -1,24 +1,22 @@
 import React, { useMemo, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import styles from './burger-ingredients.module.css';
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
-import { ingredientPropTypes } from '../../utils/proptypes';
 import IngredientTypes from '../ingredient-types/ingredient-types';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import { useDispatch, useSelector } from 'react-redux';
-import { OPEN_DETAILS_MODAL, CLOSE_DETAILS_MODAL, TAB_SWITCH } from '../../services/actions';
+import { OPEN_DETAILS_MODAL, CLOSE_DETAILS_MODAL, TAB_SWITCH } from '../../services/actions/menu';
+import Tabs from "../tabs/tabs";
 
 const BurgerIngredients = () => {
   const dispatch = useDispatch();
 
   const { ingredients } = useSelector( (state) => state.app);
-  const { currentTab, modal } = useSelector( (state) => state.burgerIngredients);
+  const { currentTab, modal } = useSelector( (state) => state.menu);
 
   const setCurrentTab = (tab) => {
     dispatch({
       type: TAB_SWITCH,
-      tab: tab,
+      tab,
     })
   }
 
@@ -63,31 +61,13 @@ const BurgerIngredients = () => {
     })
   }
 
-  const checkTab = (tabName) => {
-    return currentTab !== tabName;
-  }
-
   const onTabClick = (tabName) => {
     const section = document.querySelector(`[data-ingredient-type = ${tabName}]`);
     section.scrollIntoView(({behavior: 'smooth'}));
-    if (checkTab(tabName)) {
+    if (currentTab !== tabName) {
       setCurrentTab(tabName);
     }
   }
-
-  const tabs = useMemo(() => (
-    <div className={`${styles.tabs} mb-10`}>
-      <Tab value="bun" active={currentTab === 'bun'} onClick={onTabClick}>
-        Булки
-      </Tab>
-      <Tab value="sauce" active={currentTab === 'sauce'} onClick={onTabClick}>
-        Соусы
-      </Tab>
-      <Tab value="main" active={currentTab === 'main'} onClick={onTabClick}>
-        Начинки
-      </Tab>
-    </div>
-  ), [currentTab]);
 
   const content = useMemo(() => (
     <div className={styles.sections} id="ingredients" ref={scrollable} onClick={onIngredientCLick}>
@@ -98,8 +78,8 @@ const BurgerIngredients = () => {
   ), [ingredients])
 
   return (
-    <div className={styles.ingredients}>
-      {tabs}
+    <div className={styles.container}>
+      <Tabs onTabClick={onTabClick} currentTab={currentTab}/>
       {content}
 
       {modal &&
@@ -109,10 +89,6 @@ const BurgerIngredients = () => {
       }
     </div>
   )
-}
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(ingredientPropTypes),
 }
 
 export default BurgerIngredients;
