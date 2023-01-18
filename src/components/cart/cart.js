@@ -12,7 +12,7 @@ import PropTypes from "prop-types";
 const Cart = (props) => {
   const { onDropHandler } = props;
   const dispatch = useDispatch();
-  const { constructorIngredients, orderModal, orderFailed, orderNumber } = useSelector(state => state.cart);
+  const { constructorIngredients, orderModal, orderFailed, order } = useSelector(state => state.cart);
 
   const closeOrderModal = () => {
     dispatch({
@@ -47,15 +47,15 @@ const Cart = (props) => {
 
   const modalContent = useMemo(
     () => {
-    return orderFailed ? (
+    return !orderFailed && order ? (
+      <OrderDetails number={order.number}/>
+    ) : (
       <>
         <p className="text text_type_main-medium mb-4">Произошла ошибка.</p>
         <p className="text text_type_main-default text_color_inactive">Попробуйте повторно оформить заказ.</p>
       </>
-    ) : (
-      <OrderDetails number={orderNumber}/>
     );
-  }, [orderFailed, orderNumber]);
+  }, [orderFailed, order]);
 
   return (
     <div className={styles.container}>

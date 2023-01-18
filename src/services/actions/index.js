@@ -68,7 +68,7 @@ export const placeOrder = (ingredients) => {
         if (res && res.success) {
           dispatch({
             type: PLACE_ORDER_SUCCESS,
-            orderNumber: res.order.number
+            order: res.order
           })
           dispatch({
             type: OPEN_ORDER_MODAL

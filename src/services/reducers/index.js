@@ -158,7 +158,7 @@ const cartReducer = (state = cartInitialState, action) => {
         ...state,
         constructorIngredients: {
           ...state.constructorIngredients,
-          filling: [...state.constructorIngredients.filling.filter((item, index) => index !== action.index)]
+          filling: [...state.constructorIngredients.filling].filter((item, index) => index !== action.index)
         }
       }
     }
@@ -173,7 +173,7 @@ const cartReducer = (state = cartInitialState, action) => {
         ...state,
         orderRequest: false,
         orderFailed: false,
-        orderNumber: action.orderNumber
+        order: action.order
       }
     }
     case PLACE_ORDER_FAILED: {
