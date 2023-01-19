@@ -5,56 +5,18 @@ import ErrorBoundary from '../error-boundary/error-doundary';
 import ErrorMessage from '../error-message/error-message';
 import { Loader } from '../../ui/loader/loader';
 import Cart from '../cart/cart';
-import {
-  getIngredients,
-  DECREASE_INGREDIENT_AMOUNT,
-  INCREASE_INGREDIENT_AMOUNT
-} from '../../services/actions';
-import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../services/actions/burger-constructor'
+import { getIngredients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const App = () => {
   const dispatch = useDispatch();
-  const { ingredients, ingredientsRequest, ingredientsFailed } = useSelector( state => state.app);
+  const { ingredients, ingredientsRequest, ingredientsFailed } = useSelector( state => state.ingredients);
 
   useEffect(() => {
     dispatch(getIngredients());
-  }, [])
-
-  const handleDrop = (draggableItem) => {
-    dispatch({
-      type: INCREASE_INGREDIENT_AMOUNT,
-      id: draggableItem.id
-    });
-
-    const ingredient = ingredients.find((item) => item['_id'] === draggableItem.id);
-
-    if (ingredient.type === 'bun') {
-      const previousBun = ingredients.find((item) => item.type === 'bun' && item['__v'] > 0);
-
-      dispatch({
-        type: ADD_BUN_TO_CONSTRUCTOR,
-        bun: ingredient
-      })
-
-      if (!previousBun) return;
-
-      dispatch({
-        type: DECREASE_INGREDIENT_AMOUNT,
-        id: previousBun['_id']
-      });
-    } else {
-      dispatch({
-        type: ADD_FILLING_TO_CONSTRUCTOR,
-        ingredient: {
-          ...ingredient,
-          key: `${ingredient['_id']}${ingredient['__v']}`
-        }
-      })
-    }
-  }
+  }, [dispatch])
 
   return (
     <ErrorBoundary>
@@ -75,7 +37,7 @@ const App = () => {
                 <div className="two-columns">
                   <DndProvider backend={HTML5Backend}>
                     <BurgerIngredients />
-                    <Cart onDropHandler={handleDrop}/>
+                    <Cart />
                   </DndProvider>
                 </div>
               </>

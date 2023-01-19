@@ -3,9 +3,7 @@ import {placeOrderRequest} from '../burger-api';
 export const PLACE_ORDER_REQUEST = 'PLACE_ORDER_REQUEST';
 export const PLACE_ORDER_SUCCESS = 'PLACE_ORDER_SUCCESS';
 export const PLACE_ORDER_FAILED = 'PLACE_ORDER_FAILED';
-
-export const OPEN_ORDER_MODAL = 'OPEN_ORDER_MODAL';
-export const CLOSE_ORDER_MODAL = 'CLOSE_ORDER_MODAL';
+export const CLEAR_ORDER_INFO = 'CLEAR_ORDER_INFO';
 
 export const placeOrder = (ingredients) => {
   return (dispatch) => {
@@ -20,13 +18,8 @@ export const placeOrder = (ingredients) => {
             type: PLACE_ORDER_SUCCESS,
             order: res.order
           })
-          dispatch({
-            type: OPEN_ORDER_MODAL
-          })
         } else {
-          dispatch({
-            type: PLACE_ORDER_FAILED
-          })
+          return Promise.reject('что-то пошло не так');
         }
       })
       .catch(err => {

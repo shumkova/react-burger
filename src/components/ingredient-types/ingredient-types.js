@@ -4,9 +4,7 @@ import Ingredient from '../ingredient/ingredient';
 import PropTypes from 'prop-types';
 import {ingredientPropTypes} from '../../utils/proptypes';
 
-const IngredientTypes = (props) => {
-  const {type, title, sectionList} = props;
-
+const IngredientTypes = ({ type, title, sectionList }) => {
   return (
     <section className={styles.type} data-ingredient-type={type}>
       <h2 className={`${styles.title} text text_type_main-medium mb-6`}>{title}</h2>
@@ -26,7 +24,7 @@ const IngredientTypes = (props) => {
 IngredientTypes.propTypes = {
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  sectionList: PropTypes.arrayOf(ingredientPropTypes).isRequired,
+  sectionList: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired,
 }
 
 export default IngredientTypes;

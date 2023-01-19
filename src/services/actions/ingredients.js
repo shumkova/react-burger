@@ -21,9 +21,7 @@ export const getIngredients = () => {
             ingredients: res.data
           })
         } else {
-          dispatch({
-            type: GET_INGREDIENTS_FAILED
-          })
+          return Promise.reject('что-то пошло не так');
         }
       })
       .catch(err => {

@@ -1,8 +1,8 @@
-import { CLOSE_DETAILS_MODAL, OPEN_DETAILS_MODAL, TAB_SWITCH } from '../actions/menu';
+import { CLEAR_INGREDIENT_DETAILS, SET_INGREDIENTS_DETAILS, TAB_SWITCH } from '../actions/menu';
+import {BUN} from '../../utils/consts';
 
 const menuInitialState = {
-  currentTab: 'bun',
-  modal: false,
+  currentTab: BUN,
   ingredientDetails: null
 }
 
@@ -14,17 +14,15 @@ export const menuReducer = (state = menuInitialState, action) => {
         currentTab: action.tab
       };
     }
-    case OPEN_DETAILS_MODAL: {
+    case SET_INGREDIENTS_DETAILS: {
       return {
         ...state,
-        modal: true,
         ingredientDetails: action.ingredient
       }
     }
-    case CLOSE_DETAILS_MODAL: {
+    case CLEAR_INGREDIENT_DETAILS: {
       return {
         ...state,
-        modal: false,
         ingredientDetails: null
       }
     }

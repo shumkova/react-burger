@@ -1,40 +1,40 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import * as ReactDOM from 'react-dom';
 import modalStyles from './modal.module.css';
-import {CloseIcon} from '@ya.praktikum/react-developer-burger-ui-components';
+import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#react-modals');
 
 const Modal = (props) => {
-  const {title, onClose} = props;
+  const { title, onClose } = props;
   const modalEl = React.useRef();
   const overlayEl = React.useRef();
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     modalEl.current.classList.remove(modalStyles.modal_open);
     modalEl.current.classList.add(modalStyles.modal_close);
 
     setTimeout(onClose, 300);
-  }
+  }, [onClose])
 
-  const onEscPress = (evt) => {
-    if (evt.key === 'Escape') {
-      closeModal();
+  useEffect(() => {
+    const onEscPress = (evt) => {
+      if (evt.key === 'Escape') {
+        closeModal();
+      }
     }
-  }
 
-  React.useEffect(() => {
-      modalEl.current.classList.add(modalStyles.modal_open);
-      modalEl.current.classList.remove(modalStyles.modal_close);
+    modalEl.current.classList.add(modalStyles.modal_open);
+    modalEl.current.classList.remove(modalStyles.modal_close);
 
-      document.addEventListener('keydown', onEscPress);
+    document.addEventListener('keydown', onEscPress);
 
-      return () => {
-        document.removeEventListener('keydown', onEscPress);
-      };
-  }, []);
+    return () => {
+      document.removeEventListener('keydown', onEscPress);
+    };
+  }, [closeModal]);
 
   return ReactDOM.createPortal(
     (

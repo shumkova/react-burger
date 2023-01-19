@@ -1,49 +1,49 @@
 .container {
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .container_empty {
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 
-    padding: 40px;
+  padding: 40px;
 
-    border-radius: 30px;
-    border: 2px solid;
-    border-color: var(--colors-interface-accent);
+  border-radius: 30px;
+  border: 2px solid;
+  border-color: var(--colors-interface-accent);
 
-    text-align: center;
+  text-align: center;
 }
 
 .element {
-    flex-grow: 0;
+  flex-grow: 0;
 }
 
 .inner {
-    margin: 0;
-    max-height: calc(100vh - 564px);
+  margin: 0;
+  max-height: calc(100vh - 564px);
 
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    list-style: none;
-    padding-left: 0;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  list-style: none;
+  padding-left: 0;
+  overflow: auto;
 }
 
 .inner::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 .inner::-webkit-scrollbar-track {
-    background-color: #2F2F37;
+  background-color: #2F2F37;
 }
 
 .inner::-webkit-scrollbar-thumb {
-    background: #8585AD;
-    border: 3px solid #8585AD;
+  background: #8585AD;
+  border: 3px solid #8585AD;
 }

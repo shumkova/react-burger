@@ -2,16 +2,14 @@ import {
   PLACE_ORDER_REQUEST,
   PLACE_ORDER_SUCCESS,
   PLACE_ORDER_FAILED,
-  OPEN_ORDER_MODAL,
-  CLOSE_ORDER_MODAL
+  CLEAR_ORDER_INFO,
 } from "../actions/order";
 
 const orderInitialState = {
-  orderModal: false,
   orderRequest: false,
   orderFailed: false,
   orderError: '',
-  orderInfo: null
+  orderInfo: {}
 }
 
 export const orderReducer = (state = orderInitialState, action) => {
@@ -36,19 +34,13 @@ export const orderReducer = (state = orderInitialState, action) => {
         orderRequest: false,
         orderFailed: true,
         orderError: action.text,
-        orderInfo: null
+        orderInfo: {}
       }
     }
-    case OPEN_ORDER_MODAL: {
+    case CLEAR_ORDER_INFO: {
       return {
         ...state,
-        orderModal: true
-      }
-    }
-    case CLOSE_ORDER_MODAL: {
-      return {
-        ...state,
-        orderModal: false
+        orderInfo: {}
       }
     }
     default: {

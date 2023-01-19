@@ -2,7 +2,7 @@ import React, {useRef} from 'react';
 import styles from './filling-ingredient.module.css';
 import PropTypes from 'prop-types';
 import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import { DECREASE_INGREDIENT_AMOUNT } from '../../services/actions';
+import { DECREASE_INGREDIENT_AMOUNT } from '../../services/actions/ingredients';
 import { REMOVE_FILLING_FROM_CONSTRUCTOR } from '../../services/actions/burger-constructor';
 import {useDispatch} from 'react-redux';
 import {ingredientPropTypes} from '../../utils/proptypes';
@@ -73,9 +73,9 @@ const FillingIngredient = ({ data, moveIngredient, findIngredient }) => {
 }
 
 FillingIngredient.propTypes = {
-  data: ingredientPropTypes,
-  moveIngredient: PropTypes.func,
-  findIngredient: PropTypes.func,
+  data: ingredientPropTypes.isRequired,
+  moveIngredient: PropTypes.func.isRequired,
+  findIngredient: PropTypes.func.isRequired,
 }
 
 export default FillingIngredient;

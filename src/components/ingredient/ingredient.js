@@ -3,13 +3,11 @@ import styles from './ingredient.module.css';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { ingredientPropTypes } from '../../utils/proptypes';
 import { useDrag } from 'react-dnd';
-import PropTypes from 'prop-types';
+import { BUN } from '../../utils/consts';
 
-const Ingredient = (props) => {
-  const {data} = props;
+const Ingredient = ({ data }) => {
   const id = data['_id'];
-
-  const chosenBun = data.type === 'bun' && data['__v'] > 0;
+  const chosenBun = data.type === BUN && data['__v'] > 0;
 
   const [, dragRef] = useDrag({
     type: data.type,
@@ -17,30 +15,28 @@ const Ingredient = (props) => {
   });
 
   return (
-    (
-      <div
-        className={`${styles.container} ${chosenBun && styles.disabled}`}
-        data-ingredient={id}
-        {...(!chosenBun && { ref: dragRef })}
-      >
-        <div className={styles.info}>
-          <div className={styles.wrapper}>
-            <picture>
-              <source media="(max-width: 767px)" srcSet={data['image_mobile']}/>
-              <img className={styles.img} src={data.image} alt={data.name}/>
-            </picture>
-          </div>
-          <p className={`${styles.price} text text_type_digits-default mt-2 mb-2`}>
-            {data.price}
-            <CurrencyIcon type="primary" />
-          </p>
-          <h3 className={`${styles.name} text text_type_main-default`}>{data.name}</h3>
+    <div
+      className={`${styles.container} ${chosenBun && styles.disabled}`}
+      data-ingredient={id}
+      {...(!chosenBun && { ref: dragRef })}
+    >
+      <div className={styles.info}>
+        <div className={styles.wrapper}>
+          <picture>
+            <source media="(max-width: 767px)" srcSet={data['image_mobile']}/>
+            <img className={styles.img} src={data.image} alt={data.name}/>
+          </picture>
         </div>
-        {
-          data['__v'] > 0 && <Counter count={data['__v']} size="default" extraClass="m-1" />
-        }
+        <p className={`${styles.price} text text_type_digits-default mt-2 mb-2`}>
+          {data.price}
+          <CurrencyIcon type="primary" />
+        </p>
+        <h3 className={`${styles.name} text text_type_main-default`}>{data.name}</h3>
       </div>
-    )
+      {
+        data['__v'] > 0 && <Counter count={data['__v']} size="default" extraClass="m-1" />
+      }
+    </div>
   )
 }
 

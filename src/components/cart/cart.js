@@ -2,37 +2,25 @@ import React, { useMemo } from 'react';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
 import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details';
 import styles from './cart.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { CLOSE_ORDER_MODAL, placeOrder } from '../../services/actions/order';
-import PropTypes from 'prop-types';
+import { CLEAR_ORDER_INFO, placeOrder} from '../../services/actions/order';
+import { DECREASE_INGREDIENT_AMOUNT, INCREASE_INGREDIENT_AMOUNT } from '../../services/actions/ingredients';
+import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../services/actions/burger-constructor';
+import { countSum } from './cart.utils';
+import OrderModal from '../order-modal/order-modal';
+import { BUN } from '../../utils/consts';
 
-const Cart = (props) => {
-  const { onDropHandler } = props;
+const Cart = () => {
   const dispatch = useDispatch();
   const constructorIngredients = useSelector(state => state.constructorIngredients);
-  const { orderInfo, orderModal, orderFailed } = useSelector(state => state.order);
+  const { orderInfo } = useSelector(state => state.order);
+  const { ingredients } = useSelector(state => state.ingredients);
 
   const closeOrderModal = () => {
     dispatch({
-      type: CLOSE_ORDER_MODAL
+      type: CLEAR_ORDER_INFO
     })
-  }
-
-  const countSum = (data) => {
-    const { bun, filling } = data;
-    let sum = 0;
-
-    if (bun) {
-      sum += bun.price*2;
-    }
-
-    if (filling.length > 0) {
-      sum += filling.reduce((price, item) => price + item.price, 0);
-    }
-
-    return sum;
   }
 
   const orderSum = useMemo(() => {
@@ -46,21 +34,42 @@ const Cart = (props) => {
     dispatch(placeOrder(ids));
   }
 
-  const modalContent = useMemo(
-    () => {
-    return !orderFailed && orderInfo ? (
-      <OrderDetails number={orderInfo.number}/>
-    ) : (
-      <>
-        <p className="text text_type_main-medium mb-4">Произошла ошибка.</p>
-        <p className="text text_type_main-default text_color_inactive">Попробуйте повторно оформить заказ.</p>
-      </>
-    );
-  }, [orderFailed, orderInfo]);
+  const handleDrop = (draggableItem) => {
+    dispatch({
+      type: INCREASE_INGREDIENT_AMOUNT,
+      id: draggableItem.id
+    });
+
+    const ingredient = ingredients.find((item) => item['_id'] === draggableItem.id);
+
+    if (ingredient.type === BUN) {
+      const previousBun = ingredients.find((item) => item.type === BUN && item['__v'] > 0);
+
+      dispatch({
+        type: ADD_BUN_TO_CONSTRUCTOR,
+        bun: ingredient
+      })
+
+      if (!previousBun) return;
+
+      dispatch({
+        type: DECREASE_INGREDIENT_AMOUNT,
+        id: previousBun['_id']
+      });
+    } else {
+      dispatch({
+        type: ADD_FILLING_TO_CONSTRUCTOR,
+        ingredient: {
+          ...ingredient,
+          key: `${ingredient['_id']}${ingredient['__v']}`
+        }
+      })
+    }
+  }
 
   return (
     <div className={styles.container}>
-      <BurgerConstructor onDropHandler={onDropHandler}/>
+      <BurgerConstructor onDropHandler={handleDrop}/>
 
       <div className={`${styles.bottom} mt-5 pr-4`}>
         <p className={`${styles.total} mr-10`}>
@@ -72,17 +81,13 @@ const Cart = (props) => {
         </Button>
       </div>
 
-      {orderModal && (
+      {orderInfo.number && (
         <Modal onClose={closeOrderModal}>
-          {modalContent}
+          <OrderModal />
         </Modal>
       )}
     </div>
   )
-}
-
-Cart.propTypes = {
-  onDropHandler: PropTypes.func.isRequired
 }
 
 export default Cart;
