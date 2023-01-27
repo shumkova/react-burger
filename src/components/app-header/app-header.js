@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {Logo} from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css';
 import NavLink from '../nav-link/nav-link';
 import PropTypes from 'prop-types';
 
-const AppHeader = ({activeLink}) => {
+const AppHeader = memo(({activeLink}) => {
   return (
     <header className={styles.wrapper}>
       <div className={`${styles.container} pt-4 pb-4 `}>
@@ -27,7 +27,7 @@ const AppHeader = ({activeLink}) => {
       </div>
     </header>
   )
-}
+})
 
 AppHeader.propTypes = {
   activeLink: PropTypes.string.isRequired

@@ -1,27 +1,47 @@
-import React, {memo} from 'react';
-import PropTypes from 'prop-types';
+import React, { memo } from 'react';
 import styles from './burger-constructor.module.css';
-import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
-import {constructorIngredientsPropTypes} from '../../utils/proptypes';
+import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
+import {useDispatch, useSelector} from 'react-redux';
+import { useDrop } from 'react-dnd';
+import PropTypes from 'prop-types';
+import { MOVE_FILLING_INGREDIENTS } from '../../services/actions/burger-constructor';
+import FillingIngredient from '../filling-ingredient/filling-ingredient';
+import { BUN, MAIN, SAUCE } from '../../utils/consts';
 
-const BurgerConstructor = memo(({ constructorIngredients }) => {
-  const { bun, filling } = constructorIngredients;
+const BurgerConstructor = memo(({ onDropHandler }) => {
+  const { bun, filling } = useSelector(state => state.constructorIngredients);
+  const dispatch = useDispatch();
 
-  let innerElements = null;
+  const [, dropTarget] = useDrop({
+    accept: [BUN, SAUCE, MAIN],
+    drop(itemId) {
+      onDropHandler(itemId);
+    }
+  });
 
-  if (filling.length > 0) {
-    innerElements = filling.map((item) => {
-      return (
-        <li className={styles.item} key={item['_id']}>
-          <button className={styles.drug} type="button"><DragIcon type="primary" /></button>
-          <ConstructorElement text={item.name} thumbnail={item.image} price={item.price} />
-        </li>
-      );
+  const findFillingIngredient = (key) => {
+    const ingredient = filling.filter((item) => `${item.key}` === key)[0];
+    return {
+      ingredient,
+      index: filling.indexOf(ingredient),
+    }
+  }
+
+  const moveFillingIngredient = (key, toIndex) => {
+    const { index } = findFillingIngredient(key);
+    dispatch({
+      type: MOVE_FILLING_INGREDIENTS,
+      index,
+      toIndex
     })
   }
 
+  const chosen = bun || filling.length > 0;
+
   return (
-    <div className="pl-4 pb-5">
+
+    <div className={`pl-4 pb-5 ${styles.container} ${!chosen ? styles.container_empty : ''}`} ref={dropTarget}>
+      {!chosen && <p className="text text_type_main-default">Перетащите выбранные ингредиенты сюда</p>}
       {bun && (
         <ConstructorElement
           type="top"
@@ -29,15 +49,19 @@ const BurgerConstructor = memo(({ constructorIngredients }) => {
           text={bun.name}
           price={bun.price}
           thumbnail={bun.image}
-          extraClass={'ml-8 mb-4'}
+          extraClass={`ml-8 mb-4 ${styles.element}`}
         />
       )}
 
-      {innerElements && (
-        <ul className={`${styles.inner}`}>
-          {innerElements}
-        </ul>
-      )}
+      <ul className={`${styles.inner}`}>
+        {
+          filling.length > 0 ?
+            filling.map((item, index) => (
+              <FillingIngredient data={item} index={index} moveIngredient={moveFillingIngredient} findIngredient={findFillingIngredient} key={item.key}/>
+            ))
+            : ('')
+        }
+      </ul>
 
       {bun && (
         <ConstructorElement
@@ -46,7 +70,7 @@ const BurgerConstructor = memo(({ constructorIngredients }) => {
           text={bun.name}
           price={bun.price}
           thumbnail={bun.image}
-          extraClass={'ml-8 mt-4'}
+          extraClass={`ml-8 mt-4 ${styles.element}`}
         />
       )}
     </div>
@@ -54,7 +78,7 @@ const BurgerConstructor = memo(({ constructorIngredients }) => {
 })
 
 BurgerConstructor.propTypes = {
-  constructorIngredients: constructorIngredientsPropTypes,
+  onDropHandler: PropTypes.func.isRequired
 }
 
 export default BurgerConstructor;

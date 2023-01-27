@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './modal-overlay.module.css';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-const ModalOverlay = React.forwardRef((props, ref) => {
+const ModalOverlay = React.forwardRef(({ onClick }, ref) => {
   return (
-    <div className={styles.overlay} ref={ref} onClick={props.onClick}></div>
+    <div className={styles.overlay} ref={ref} onClick={onClick}></div>
   )
 })
 

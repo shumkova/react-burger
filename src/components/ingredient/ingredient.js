@@ -1,14 +1,26 @@
 import React from 'react';
 import styles from './ingredient.module.css';
-import {CurrencyIcon, Counter} from '@ya.praktikum/react-developer-burger-ui-components';
-import {ingredientPropTypes} from '../../utils/proptypes';
+import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
+import { ingredientPropTypes } from '../../utils/proptypes';
+import { useDrag } from 'react-dnd';
+import { BUN } from '../../utils/consts';
 
-const Ingredient = (props) => {
-  const {data} = props;
+const Ingredient = ({ data }) => {
+  const id = data['_id'];
+  const chosenBun = data.type === BUN && data['__v'] > 0;
+
+  const [, dragRef] = useDrag({
+    type: data.type,
+    item: {id}
+  });
 
   return (
-    (
-      <div className={styles.ingredient} data-ingredient={data['_id']}>
+    <div
+      className={`${styles.container} ${chosenBun && styles.disabled}`}
+      data-ingredient={id}
+      {...(!chosenBun && { ref: dragRef })}
+    >
+      <div className={styles.info}>
         <div className={styles.wrapper}>
           <picture>
             <source media="(max-width: 767px)" srcSet={data['image_mobile']}/>
@@ -20,14 +32,16 @@ const Ingredient = (props) => {
           <CurrencyIcon type="primary" />
         </p>
         <h3 className={`${styles.name} text text_type_main-default`}>{data.name}</h3>
-        <Counter count={1} size="default" extraClass="m-1" />
       </div>
-    )
+      {
+        data['__v'] > 0 && <Counter count={data['__v']} size="default" extraClass="m-1" />
+      }
+    </div>
   )
 }
 
 Ingredient.propTypes = {
-  data: ingredientPropTypes.isRequired
+  data: ingredientPropTypes.isRequired,
 };
 
 export default Ingredient;
