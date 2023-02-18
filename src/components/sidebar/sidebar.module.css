@@ -1,0 +1,25 @@
+.nav {
+  padding-top: 80px;
+}
+
+.list {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.link {
+  display: flex;
+  height: 64px;
+  align-items: center;
+  color: var(--text--inactive-color);
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.link_active {
+  color: var(--text-color);
+  cursor: default;
+}

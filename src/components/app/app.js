@@ -1,51 +1,107 @@
-import React, { useEffect } from 'react';
-import AppHeader from '../app-header/app-header';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
+import React, {useCallback, useEffect} from 'react';
 import ErrorBoundary from '../error-boundary/error-doundary';
-import ErrorMessage from '../error-message/error-message';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ProtectedRoute from '../protected-route';
+import UserProtectedRoute from '../user-protected-route';
 import { Loader } from '../../ui/loader/loader';
-import Cart from '../cart/cart';
-import { getIngredients } from '../../services/actions/ingredients';
-import { useDispatch, useSelector } from 'react-redux';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAccessToken, getUser, USER_LOADED} from '../../services/actions/auth';
+import {getCookie} from '../../utils/cookie';
+import {getIngredients} from '../../services/actions/ingredients';
+
+import {
+  Root,
+  LoginPage,
+  RegisterPage,
+  ForgotPasswordPage,
+  ResetPassword,
+  ProfilePage,
+  NotFound,
+  OrdersPage
+} from '../../pages/index';
+
+export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Root />,
+    children: [
+      {
+        path: '/login',
+        element: <UserProtectedRoute element={<LoginPage />} />,
+      },
+      {
+        path: '/register',
+        element: <UserProtectedRoute element={<RegisterPage />} />,
+      },
+      {
+        path: '/forgot-password',
+        element: <UserProtectedRoute element={<ForgotPasswordPage />} />,
+      },
+      {
+        path: '/reset-password',
+        element: <UserProtectedRoute element={<ResetPassword />} />,
+      },
+      {
+        path: '/profile',
+        element: <ProtectedRoute element={<ProfilePage />} />,
+        children: [
+          {
+            path: '/profile/orders',
+            element: <ProtectedRoute element={<OrdersPage />} />
+          }
+        ]
+      },
+      {
+        path: '*',
+        element: <NotFound />,
+      },
+    ]
+  },
+
+
+  {
+    path: '/ingredients/:id',
+    element: <></>,
+  },
+
+]);
 
 const App = () => {
   const dispatch = useDispatch();
-  const { ingredients, ingredientsRequest, ingredientsFailed } = useSelector( state => state.ingredients);
+  const { user, userLoaded } = useSelector(state => state.auth);
+
+  const checkUser = useCallback(() => {
+    const accessToken = getCookie('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+
+    if (!user) {
+      if (accessToken) {
+        dispatch(getUser());
+      } else if (refreshToken) {
+        dispatch(getAccessToken());
+      } else {
+        dispatch({
+          type: USER_LOADED
+        })
+      }
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
+    checkUser();
     dispatch(getIngredients());
-  }, [dispatch])
+  });
 
   return (
     <ErrorBoundary>
-      <div className="page">
-        <AppHeader activeLink={'main'}/>
-
-        <main className="main container pt-10">
-
-          {ingredientsFailed && <ErrorMessage /> }
-
-          {ingredientsRequest ? (
-            <Loader size="large"/>
-          ) :
-            ingredients.length > 0 &&
-            (
-              <>
-                <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
-                <div className="two-columns">
-                  <DndProvider backend={HTML5Backend}>
-                    <BurgerIngredients />
-                    <Cart />
-                  </DndProvider>
-                </div>
-              </>
-            )
-          }
-
-        </main>
-      </div>
+      {
+        userLoaded ?
+          <div className="page">
+            <RouterProvider router={router} />
+          </div>
+          :
+          <Loader size="large"/>
+      }
     </ErrorBoundary>
   )
 }

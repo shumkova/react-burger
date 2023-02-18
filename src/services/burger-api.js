@@ -1,7 +1,8 @@
 const baseUrl = 'https://norma.nomoreparties.space/api';
 
-const checkResponse = (res) => {
+export const checkResponse = (res) => {
   return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+  // return res.ok ? res.json() : Promise.reject(res);
 }
 
 const getIngredientsRequest = () => {
@@ -20,4 +21,4 @@ const placeOrderRequest = (ingredientsArr) => {
   }).then(checkResponse)
 }
 
-export {getIngredientsRequest, placeOrderRequest};
+export { getIngredientsRequest, placeOrderRequest};

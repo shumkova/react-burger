@@ -42,6 +42,7 @@ body {
 .container {
   box-sizing: border-box;
   margin: 0 auto;
+  width: 100%;
   max-width: 1280px;
   padding-left: 20px;
   padding-right: 20px;
@@ -51,4 +52,8 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px;
+}
+
+.link {
+  text-decoration: none;
 }

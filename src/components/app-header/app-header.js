@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
-import {Logo} from '@ya.praktikum/react-developer-burger-ui-components';
+import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css';
 import NavLink from '../nav-link/nav-link';
 import PropTypes from 'prop-types';
+import { APP_SECTION } from '../../utils/consts';
 
 const AppHeader = memo(({activeLink}) => {
   return (
@@ -11,10 +12,10 @@ const AppHeader = memo(({activeLink}) => {
         <nav>
           <ul className={styles.nav__list}>
             <li>
-              <NavLink type="burger" isActive={activeLink === 'main'} text="Конструктор"/>
+              <NavLink to={'/'} type={APP_SECTION.MAIN} isActive={activeLink === APP_SECTION.MAIN} text="Конструктор"/>
             </li>
             <li>
-              <NavLink type="list" isActive={activeLink === 'orders'} text="Лента заказов"/>
+              <NavLink to={'/feed'} type={APP_SECTION.FEED} isActive={activeLink === APP_SECTION.FEED} text="Лента заказов"/>
             </li>
           </ul>
         </nav>
@@ -23,7 +24,7 @@ const AppHeader = memo(({activeLink}) => {
           <Logo />
         </div>
 
-        <NavLink type="profile" isActive={activeLink === 'profile'} text="Личный кабинет"/>
+        <NavLink to={'/profile'} type={APP_SECTION.PROFILE} isActive={activeLink === APP_SECTION.PROFILE} text="Личный кабинет"/>
       </div>
     </header>
   )
