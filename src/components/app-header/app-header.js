@@ -1,21 +1,27 @@
 import React, { memo } from 'react';
-import { Logo } from '@ya.praktikum/react-developer-burger-ui-components';
+import { BurgerIcon, ListIcon, Logo, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './app-header.module.css';
-import NavLink from '../nav-link/nav-link';
-import PropTypes from 'prop-types';
-import { APP_SECTION } from '../../utils/consts';
+import { Link, useLocation } from 'react-router-dom';
 
-const AppHeader = memo(({activeLink}) => {
+const AppHeader = memo(() => {
+  const { pathname } = useLocation();
+
   return (
     <header className={styles.wrapper}>
       <div className={`${styles.container} pt-4 pb-4 `}>
         <nav>
           <ul className={styles.nav__list}>
             <li>
-              <NavLink to={'/'} type={APP_SECTION.MAIN} isActive={activeLink === APP_SECTION.MAIN} text="Конструктор"/>
+              <Link to={'/'} className={`${styles.link} ${pathname === '/' ? styles.link_active : ''} pt-4 pb-4 pl-5 pr-5`}>
+                <BurgerIcon type={pathname === '/' ? 'primary' : 'secondary'} />
+                <span className="text text_type_main-default">Конструктор</span>
+              </Link>
             </li>
             <li>
-              <NavLink to={'/feed'} type={APP_SECTION.FEED} isActive={activeLink === APP_SECTION.FEED} text="Лента заказов"/>
+              <Link to={'/order'} className={`${styles.link} ${pathname === '/order' ? styles.link_active : ''} pt-4 pb-4 pl-5 pr-5`}>
+                <ListIcon type={pathname === '/order' ? 'primary' : 'secondary'} />
+                <span className="text text_type_main-default">Лента заказов</span>
+              </Link>
             </li>
           </ul>
         </nav>
@@ -23,15 +29,13 @@ const AppHeader = memo(({activeLink}) => {
         <div className={styles.logo}>
           <Logo />
         </div>
-
-        <NavLink to={'/profile'} type={APP_SECTION.PROFILE} isActive={activeLink === APP_SECTION.PROFILE} text="Личный кабинет"/>
+        <Link to={'/profile'} className={`${styles.link} ${styles.link_type_profile} ${pathname.includes('/profile') ? styles.link_active : ''} pt-4 pb-4 pl-5 pr-5`}>
+          <ProfileIcon type={pathname.includes('/profile') ? 'primary' : 'secondary'} />
+          <span className="text text_type_main-default">Личный кабинет</span>
+        </Link>
       </div>
     </header>
   )
 })
-
-AppHeader.propTypes = {
-  activeLink: PropTypes.string.isRequired
-}
 
 export default AppHeader;

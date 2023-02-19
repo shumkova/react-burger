@@ -74,7 +74,10 @@ const App = () => {
     const accessToken = getCookie('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
-    if (!user) {
+    console.log(accessToken);
+    console.log(refreshToken);
+
+    if (!user && !userLoaded) {
       if (accessToken) {
         dispatch(getUser());
       } else if (refreshToken) {
@@ -90,7 +93,7 @@ const App = () => {
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
-  });
+  }, []);
 
   return (
     <ErrorBoundary>

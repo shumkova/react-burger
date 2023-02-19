@@ -1,5 +1,4 @@
 import { APP_SECTION, PROFILE_ROUTES, PROFILE_SECTION } from '../../utils/consts';
-import {RESET_PROFILE_SECTION, SWITCH_APP_SECTION, SWITCH_PROFILE_SECTION} from "../actions/app";
 
 const url = window.location.pathname;
 const isProfileRoute = PROFILE_ROUTES.some(route => {
@@ -19,24 +18,6 @@ const appInitialState = {
 
 export const appReducer = ( state = appInitialState, action) => {
   switch (action.type) {
-    case SWITCH_APP_SECTION: {
-      return {
-        ...state,
-        activeSection: action.section
-      }
-    }
-    case SWITCH_PROFILE_SECTION: {
-      return {
-        ...state,
-        activeProfileSection: action.section
-      }
-    }
-    case RESET_PROFILE_SECTION: {
-      return {
-        ...state,
-        activeProfileSection: PROFILE_SECTION.INDEX
-      }
-    }
     default: {
       return state;
     }

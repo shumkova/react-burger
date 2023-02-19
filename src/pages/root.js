@@ -1,17 +1,15 @@
-import AppHeader from "../components/app-header/app-header";
-import {Outlet, useHref} from "react-router-dom";
-import React from "react";
+import AppHeader from '../components/app-header/app-header';
+import { Outlet, useLocation } from 'react-router-dom';
+import React from 'react';
 import { MainPage } from './index';
-import { useSelector} from "react-redux";
 
 const Root = () => {
-  const { activeSection } = useSelector(state => state.app);
-  const url = useHref();
+  const { pathname } = useLocation();
 
   return (
     <>
-      <AppHeader activeLink={activeSection}/>
-      {url === '/' ? <MainPage /> : <Outlet />}
+      <AppHeader />
+      {pathname === '/' ? <MainPage /> : <Outlet />}
     </>
   )
 }
