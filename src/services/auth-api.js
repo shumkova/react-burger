@@ -43,6 +43,18 @@ export const accessTokenRequest = () => {
   }).then(checkResponse)
 }
 
+export const updateUserRequest = (form) => {
+  console.log('updateUserRequest');
+  return fetch(`${baseUrl}/auth/user`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getCookie('accessToken')
+    },
+    body: JSON.stringify(form)
+  }).then(checkResponse)
+}
+
 export const logOutRequest = () => {
   return fetch(`${baseUrl}/auth/logout`, {
     method: 'POST',

@@ -11,6 +11,7 @@ import {getIngredients} from '../../services/actions/ingredients';
 
 import {
   Root,
+  MainPage,
   LoginPage,
   RegisterPage,
   ForgotPasswordPage,
@@ -19,12 +20,18 @@ import {
   NotFound,
   OrdersPage
 } from '../../pages/index';
+import ProfileInfo from '../profile-info/profile-info';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Root />,
     children: [
+      {
+        path: '/',
+        element: <MainPage />,
+        index: true
+      },
       {
         path: '/login',
         element: <UserProtectedRoute element={<LoginPage />} />,
@@ -46,8 +53,13 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute element={<ProfilePage />} />,
         children: [
           {
+            path: '/profile',
+            element: <ProfileInfo />,
+            index: true
+          },
+          {
             path: '/profile/orders',
-            element: <ProtectedRoute element={<OrdersPage />} />
+            element: <OrdersPage />
           }
         ]
       },
@@ -74,9 +86,6 @@ const App = () => {
     const accessToken = getCookie('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
 
-    console.log(accessToken);
-    console.log(refreshToken);
-
     if (!user && !userLoaded) {
       if (accessToken) {
         dispatch(getUser());
@@ -88,12 +97,12 @@ const App = () => {
         })
       }
     }
-  }, [dispatch, user]);
+  }, [dispatch, user, userLoaded]);
 
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
-  }, []);
+  }, [checkUser, dispatch]);
 
   return (
     <ErrorBoundary>

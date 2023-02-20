@@ -3,3 +3,16 @@
   flex-direction: column;
   padding-top: 80px;
 }
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.cancel {
+  background-color: transparent;
+  border: none;
+  color: var(--colors-interface-accent);
+  cursor: pointer;
+}

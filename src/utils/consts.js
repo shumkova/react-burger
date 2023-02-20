@@ -7,8 +7,8 @@ export const APP_SECTION = {
   PROFILE: 'profile'
 }
 export const PROFILE_SECTION = {
-  INDEX: 'profile',
-  ORDERS: 'orders'
+  INDEX: '/profile',
+  ORDERS: '/orders'
 }
 
 export const PROFILE_ROUTES = ['profile', 'login', 'register', 'forgot-password', 'reset-password'];

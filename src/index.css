@@ -24,6 +24,7 @@
   --text-color: #F2F2F3;
   --text--inactive-color: #8585ad;
   --number-ff: 'Iceland', monospace;
+  --colors-interface-accent: #4c4cff;
 }
 
 body {
