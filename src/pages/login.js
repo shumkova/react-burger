@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import {Link, Navigate, useLocation, useNavigate} from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { EmailInput, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
 import { signIn } from '../services/actions/auth';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const LoginPage = () => {
   const [form, setValue] = useState({email: '', password: ''});
-  const { user } = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -18,14 +17,8 @@ const LoginPage = () => {
 
   const login = useCallback((evt) => {
     evt.preventDefault();
-    dispatch(signIn(form, () => { navigate(state[0].path) }));
+    dispatch(signIn(form, () => { navigate(state.lastPath, {replace: true}) }));
   }, [dispatch, form, navigate, state]);
-
-  if (user) {
-    return (
-      <Navigate to={'/'} replace={true} />
-    )
-  }
 
   return (
     <main className={`${styles.container}`}>

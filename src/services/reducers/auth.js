@@ -18,6 +18,7 @@ import {
 
 const authInitialState = {
   user: null,
+  loggedIn: false,
   userLoaded: false,
   userRequest: false,
   userFailed: false,
@@ -112,7 +113,8 @@ export const authReducer = (state = authInitialState, action) => {
       return {
         ...state,
         loginRequest: false,
-        loginFailed: false
+        loginFailed: false,
+        loggedIn: true
       }
     }
 
@@ -133,8 +135,10 @@ export const authReducer = (state = authInitialState, action) => {
     }
     case LOGOUT: {
       return {
-        ...authInitialState,
-        userLoaded: true
+        ...state,
+        user: null,
+        userLoaded: true,
+        loggedIn: false
       }
     }
 

@@ -1,39 +1,20 @@
 import React from 'react';
-import ErrorMessage from '../components/error-message/error-message';
-import {Loader} from '../ui/loader/loader';
-import {DndProvider} from 'react-dnd';
-import {HTML5Backend} from 'react-dnd-html5-backend';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import BurgerIngredients from '../components/burger-ingredients/burger-ingredients';
 import Cart from '../components/cart/cart';
-import {useSelector} from 'react-redux';
 
 const MainPage = () => {
-  const { ingredients, ingredientsRequest, ingredientsFailed } = useSelector( state => state.ingredients);
-
   return (
-    <>
-      <main className="main container pt-10">
-        {ingredientsFailed && <ErrorMessage /> }
-
-        {ingredientsRequest ? (
-            <Loader size="large"/>
-          ) :
-          ingredients.length > 0 &&
-          (
-            <>
-              <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
-              <div className="two-columns">
-                <DndProvider backend={HTML5Backend}>
-                  <BurgerIngredients />
-                  <Cart />
-                </DndProvider>
-              </div>
-            </>
-          )
-        }
-      </main>
-    </>
-
+    <main className="main container pt-10">
+      <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
+      <div className="two-columns">
+        <DndProvider backend={HTML5Backend}>
+          <BurgerIngredients />
+          <Cart />
+        </DndProvider>
+      </div>
+    </main>
   )
 }
 

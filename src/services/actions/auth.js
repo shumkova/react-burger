@@ -6,7 +6,7 @@ import {
   registerRequest,
   updateUserRequest, forgotPasswordRequest, resetPasswordRequest
 } from '../auth-api';
-import {deleteCookie, setCookie} from '../../utils/cookie';
+import {deleteCookie, getCookie, setCookie} from '../../utils/cookie';
 
 export const GET_USER_SUCCESS = 'SET_USER';
 
@@ -72,6 +72,11 @@ export const getUser = () => {
             type: GET_USER_SUCCESS,
             user: res.user
           })
+          if (getCookie('accessToken')) {
+            dispatch({
+              type: LOGIN
+            })
+          }
         }
       })
       .catch(err => {
@@ -82,7 +87,7 @@ export const getUser = () => {
 
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          getAccessToken();
+          dispatch(getAccessToken());
         } else {
           dispatch({
             type: USER_LOADED
@@ -98,10 +103,11 @@ export const getAccessToken = () => {
       .then((res) => {
         if (res && res.success) {
           saveAccessToken(res.accessToken);
-          getUser();
+          dispatch(getUser());
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch({
           type: USER_LOADED
         })
@@ -169,7 +175,9 @@ export const signOut = (successCb) => {
           dispatch({ type: LOGOUT });
           localStorage.removeItem('refreshToken');
           deleteCookie('accessToken');
-          successCb();
+          if (successCb) {
+            successCb();
+          }
         }
       })
       .catch(err => {

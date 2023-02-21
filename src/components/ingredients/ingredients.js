@@ -1,15 +1,16 @@
 import IngredientTypes from '../ingredient-types/ingredient-types';
 import React, { memo, createRef, useMemo, useEffect } from 'react';
-import { SET_INGREDIENTS_DETAILS } from '../../services/actions/menu';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './ingredients.module.css';
 import { BUN, MAIN, SAUCE } from '../../utils/consts';
+import {useLocation, useNavigate} from "react-router-dom";
 
 const Ingredients = memo(({ setCurrentTab }) => {
   const { ingredients } = useSelector( (state) => state.ingredients);
-  const dispatch = useDispatch();
   const sectionRef = createRef();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const buns = useMemo(() => ingredients.filter((item) => item.type === BUN), [ingredients]);
   const main = useMemo(() => ingredients.filter((item) => item.type === MAIN), [ingredients]);
@@ -17,12 +18,10 @@ const Ingredients = memo(({ setCurrentTab }) => {
 
   const onIngredientCLick = (e) => {
     const ingredientEl = e.target.closest('[data-ingredient]');
+    const id = ingredientEl.dataset.ingredient;
 
     if (ingredientEl) {
-      dispatch({
-        type: SET_INGREDIENTS_DETAILS,
-        ingredient: ingredients.find((item) => item['_id'] === ingredientEl.dataset.ingredient)
-      })
+      navigate(`/ingredients/${id}`, {state: {...location.state, backgroundLocation: location}});
     }
   }
 
