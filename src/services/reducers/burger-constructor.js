@@ -3,7 +3,7 @@ import {
   ADD_FILLING_TO_CONSTRUCTOR,
   REMOVE_FILLING_FROM_CONSTRUCTOR,
   UPDATE_FILLING_INGREDIENTS,
-  MOVE_FILLING_INGREDIENTS
+  MOVE_FILLING_INGREDIENTS, CLEAR_CONSTRUCTOR
 } from '../actions/burger-constructor';
 
 const burgerConstructorInitialState = {
@@ -46,6 +46,9 @@ export const burgerConstructorReducer = (state = burgerConstructorInitialState, 
         ...state,
         filling: [...state.filling]
       }
+    }
+    case CLEAR_CONSTRUCTOR: {
+      return {...burgerConstructorInitialState}
     }
     default: {
       return state;

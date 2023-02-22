@@ -10,7 +10,7 @@ import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../servic
 import { countSum } from './cart.utils';
 import OrderModal from '../order-modal/order-modal';
 import { BUN } from '../../utils/consts';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const constructorIngredients = useSelector(state => state.constructorIngredients);
@@ -21,9 +21,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const closeOrderModal = () => {
-    dispatch({
-      type: CLEAR_ORDER_INFO
-    })
+    dispatch({ type: CLEAR_ORDER_INFO });
   }
 
   const orderSum = useMemo(() => {

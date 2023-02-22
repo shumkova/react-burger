@@ -3,7 +3,7 @@ import {
   PLACE_ORDER_SUCCESS,
   PLACE_ORDER_FAILED,
   CLEAR_ORDER_INFO,
-} from "../actions/order";
+} from '../actions/order';
 
 const orderInitialState = {
   orderRequest: false,

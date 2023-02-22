@@ -63,20 +63,14 @@ const saveUser = (user, dispatch) => {
 
 export const getUser = () => {
   return (dispatch) => {
-    dispatch({
-      type: GET_USER_REQUEST
-    })
+    dispatch({ type: GET_USER_REQUEST });
     getUserRequest()
       .then(res => {
-        if (res && res.success) {
-          dispatch({
-            type: GET_USER_SUCCESS,
-            user: res.user
-          })
-          dispatch({
-            type: LOGIN
-          })
-        }
+        dispatch({
+          type: GET_USER_SUCCESS,
+          user: res.user
+        })
+        dispatch({ type: LOGIN });
       })
       .catch(err => {
         dispatch({
@@ -85,13 +79,8 @@ export const getUser = () => {
         })
 
         const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-          dispatch(getAccessToken());
-        } else {
-          dispatch({
-            type: USER_LOADED
-          })
-        }
+        refreshToken ? dispatch(getAccessToken())
+          : dispatch({ type: USER_LOADED })
       })
   }
 }
@@ -100,10 +89,8 @@ export const getAccessToken = () => {
   return (dispatch) => {
     accessTokenRequest()
       .then((res) => {
-        if (res && res.success) {
-          saveAccessToken(res.accessToken);
-          dispatch(getUser());
-        }
+        saveAccessToken(res.accessToken);
+        dispatch(getUser());
       })
       .catch(err => {
         dispatch({
@@ -114,16 +101,14 @@ export const getAccessToken = () => {
 }
 
 export const updateUser = (form) => {
-  console.log('updateUser');
   return (dispatch) => {
+    dispatch({ type: UPDATE_USER_REQUEST });
     updateUserRequest(form)
       .then(res => {
-        if (res && res.success) {
-          dispatch({
-            type: UPDATE_USER_SUCCESS,
-            user: res.user
-          })
-        }
+        dispatch({
+          type: UPDATE_USER_SUCCESS,
+          user: res.user
+        })
       })
       .catch(err => {
         dispatch({
@@ -139,21 +124,17 @@ export const signIn = (form, onSuccess) => {
     dispatch({ type: LOGIN_REQUEST });
     loginRequest(form)
       .then(res => {
-        if (res && res.success) {
-          saveUser(res.user, dispatch);
-          if (res.accessToken) {
-            saveAccessToken(res.accessToken);
-          }
-          if (res.refreshToken) {
-            saveRefreshToken(res.refreshToken);
-          }
-          dispatch({ type: LOGIN });
-          localStorage.removeItem('loggedOut');
-          if (onSuccess) {
-            onSuccess();
-          }
-        } else {
-          return Promise.reject('что-то пошло не так');
+        saveUser(res.user, dispatch);
+        if (res.accessToken) {
+          saveAccessToken(res.accessToken);
+        }
+        if (res.refreshToken) {
+          saveRefreshToken(res.refreshToken);
+        }
+        dispatch({ type: LOGIN });
+        localStorage.removeItem('loggedOut');
+        if (onSuccess) {
+          onSuccess();
         }
       })
       .catch(err => {
@@ -170,14 +151,12 @@ export const signOut = (successCb) => {
     dispatch({ type: LOGOUT_REQUEST });
     logOutRequest()
       .then(res => {
-        if (res && res.success) {
-          dispatch({ type: LOGOUT });
-          localStorage.removeItem('refreshToken');
-          deleteCookie('accessToken');
-          localStorage.setItem('loggedOut', 'true');
-          if (successCb) {
-            successCb();
-          }
+        dispatch({ type: LOGOUT });
+        localStorage.removeItem('refreshToken');
+        deleteCookie('accessToken');
+        localStorage.setItem('loggedOut', 'true');
+        if (successCb) {
+          successCb();
         }
       })
       .catch(err => {
@@ -194,20 +173,16 @@ export const register = (form) => {
     dispatch({type: REGISTER_REQUEST});
     registerRequest(form)
       .then(res => {
-        if (res && res.success) {
-          saveUser(res.user, dispatch);
-          if (res.accessToken) {
-            saveAccessToken(res.accessToken);
-          }
-          if (res.refreshToken) {
-            saveRefreshToken(res.refreshToken);
-          }
-          dispatch({type: REGISTER_SUCCESS});
-          dispatch({type: USER_LOADED});
-          dispatch({type: LOGIN});
-        } else {
-          return Promise.reject('что-то пошло не так');
+        saveUser(res.user, dispatch);
+        if (res.accessToken) {
+          saveAccessToken(res.accessToken);
         }
+        if (res.refreshToken) {
+          saveRefreshToken(res.refreshToken);
+        }
+        dispatch({type: REGISTER_SUCCESS});
+        dispatch({type: USER_LOADED});
+        dispatch({type: LOGIN});
       })
       .catch(err => {
         dispatch({
@@ -220,21 +195,13 @@ export const register = (form) => {
 
 export const forgotPassword = (email, successCb) => {
   return (dispatch) => {
-    dispatch({
-      type: FORGOT_PASSWORD_REQUEST
-    })
+    dispatch({ type: FORGOT_PASSWORD_REQUEST })
     forgotPasswordRequest(email)
       .then(res => {
-        if (res && res.success) {
-          dispatch({
-            type: FORGOT_PASSWORD_SUCCESS
-          })
-          setCookie('forgotPassword', 'true', {expires: 1200});
-          if (successCb) {
-            successCb();
-          }
-        } else {
-          return Promise.reject('Пользователя с таким адресом электронной почты не существует');
+        dispatch({ type: FORGOT_PASSWORD_SUCCESS })
+        setCookie('forgotPassword', 'true', {expires: 1200});
+        if (successCb) {
+          successCb();
         }
       })
       .catch(err => {
@@ -248,21 +215,13 @@ export const forgotPassword = (email, successCb) => {
 
 export const resetPassword = (form, successCb) => {
   return (dispatch) => {
-    dispatch({
-      type: RESET_PASSWORD_REQUEST
-    })
+    dispatch({ type: RESET_PASSWORD_REQUEST })
     resetPasswordRequest(form)
       .then(res => {
-        if (res && res.success) {
-          dispatch({
-            type: RESET_PASSWORD_SUCCESS
-          })
-          deleteCookie('forgotPassword');
-          if (successCb) {
-            successCb();
-          }
-        } else {
-          return Promise.reject('Неправильный код');
+        dispatch({ type: RESET_PASSWORD_SUCCESS })
+        deleteCookie('forgotPassword');
+        if (successCb) {
+          successCb();
         }
       })
       .catch(err => {
