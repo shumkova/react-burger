@@ -1,23 +1,20 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { EmailInput, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
 import { signIn } from '../services/actions/auth';
 import { useDispatch } from 'react-redux';
+import { useForm } from '../hooks/use-form';
 
 const LoginPage = () => {
-  const [form, setValue] = useState({email: '', password: ''});
+  const { form, handleChange } = useForm({email: '', password: ''});
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { state } = useLocation();
 
-  const onChange = (evt) => {
-    setValue({...form, [evt.target.name]: evt.target.value});
-  }
-
   const login = useCallback((evt) => {
     evt.preventDefault();
-    dispatch(signIn(form, () => { navigate(state.lastPath, {replace: true}) }));
+    dispatch(signIn(form, () => { navigate(state.from, {replace: true}) }));
   }, [dispatch, form, navigate, state]);
 
   return (
@@ -25,7 +22,7 @@ const LoginPage = () => {
       <h1 className="text text_type_main-medium mb-6">Вход</h1>
       <form action="#" className={styles.form} onSubmit={login}>
         <EmailInput
-          onChange={onChange}
+          onChange={handleChange}
           value={form.email}
           name={'email'}
           isIcon={false}
@@ -33,7 +30,7 @@ const LoginPage = () => {
           extraClass={'mb-6'}
         />
         <PasswordInput
-          onChange={onChange}
+          onChange={handleChange}
           value={form.password}
           name={'password'}
           placeholder={'Пароль'}

@@ -106,7 +106,6 @@ export const getAccessToken = () => {
         }
       })
       .catch(err => {
-        console.log(err);
         dispatch({
           type: USER_LOADED
         })

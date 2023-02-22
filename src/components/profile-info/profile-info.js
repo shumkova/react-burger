@@ -4,18 +4,18 @@ import styles from './profile-info.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { updateUser } from '../../services/actions/auth';
+import { useForm } from '../../hooks/use-form';
 
 const ProfileInfo = () => {
   const { user, updateUserRequest } = useSelector(state => state.auth);
-  const [ form, setValue ] = useState({ name: user.name || '', email: user.email || '', password: user.password || ''});
+  const { form, setValues, handleChange } = useForm({ name: user.name || '', email: user.email || '', password: user.password || ''})
   const [ hasChanged, setChanged ] = useState(false);
   const nameInputRef = useRef();
   const dispatch = useDispatch();
 
   const onChange = (evt) => {
-    const name = evt.target.name;
-    const value = evt.target.value
-    setValue({...form, [name]: value});
+    const { name, value } = evt.target;
+    handleChange(evt);
 
     if (name === 'password') {
       setChanged(true);
@@ -31,10 +31,10 @@ const ProfileInfo = () => {
   const resetForm = useCallback((evt) => {
     evt.preventDefault();
     for (const [key, value] of Object.entries(user)) {
-      setValue({...form, [key]: value});
+      setValues({...form, [key]: value});
     }
     setChanged(false);
-  }, [user, form]);
+  }, [user, form, setValues]);
 
   const saveChanges = useCallback((evt) => {
     evt.preventDefault();

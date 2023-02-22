@@ -1,20 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailInput, PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../services/actions/auth';
 import { Loader } from '../ui/loader/loader';
+import {useForm} from "../hooks/use-form";
 
 const RegisterPage = () => {
-  const [form, setValue] = useState({name: '', email: '', password: ''});
+  const { form, handleChange } = useForm({name: '', email: '', password: ''});
   const { registerRequest } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-
-  const onChange = (evt) => {
-    evt.preventDefault();
-    setValue({...form, [evt.target.name]: evt.target.value});
-  }
 
   const createUser = useCallback((evt) => {
     evt.preventDefault();
@@ -33,7 +29,7 @@ const RegisterPage = () => {
                 <Input
                   type={'text'}
                   placeholder={'Имя'}
-                  onChange={onChange}
+                  onChange={handleChange}
                   value={form.name}
                   name={'name'}
                   error={false}
@@ -42,7 +38,7 @@ const RegisterPage = () => {
                   extraClass={'mb-6'}
                 />
                 <EmailInput
-                  onChange={onChange}
+                  onChange={handleChange}
                   value={form.email}
                   name={'email'}
                   isIcon={false}
@@ -50,7 +46,7 @@ const RegisterPage = () => {
                   extraClass={'mb-6'}
                 />
                 <PasswordInput
-                  onChange={onChange}
+                  onChange={handleChange}
                   value={form.password}
                   name={'password'}
                   placeholder={'Пароль'}

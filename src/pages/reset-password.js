@@ -1,26 +1,23 @@
-import React, {useState} from 'react';
-import {Link, Navigate, useNavigate} from 'react-router-dom';
+import React from 'react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
 import {resetPassword} from '../services/actions/auth';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCookie} from '../utils/cookie';
-import {Loader} from "../ui/loader/loader";
+import {Loader} from '../ui/loader/loader';
+import {useForm} from '../hooks/use-form';
 
 const ResetPasswordPage = () => {
-  const [form, setValue] = useState({ password: '', token: ''});
+  const { form, handleChange } = useForm({ password: '', token: ''});
   const { resetPasswordRequest } = useSelector(state => state.auth);
   const forgotPasswordAction = getCookie('forgotPassword');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onChange = (evt) => {
-    setValue({...form, [evt.target.name]: evt.target.value});
-  }
-
   const reset = (evt) => {
     evt.preventDefault();
-    dispatch(resetPassword(form, navigate('/login', { replace: true })))
+    dispatch(resetPassword(form, navigate('/login', { replace: true } )));
   }
 
   if (!forgotPasswordAction) {
@@ -35,7 +32,7 @@ const ResetPasswordPage = () => {
         <>
           <form action="#" className={styles.form} onSubmit={reset}>
             <PasswordInput
-              onChange={onChange}
+              onChange={handleChange}
               value={form.password}
               name={'password'}
               placeholder={'Введите новый пароль'}
@@ -44,7 +41,7 @@ const ResetPasswordPage = () => {
             <Input
               type={'text'}
               placeholder={'Введите код из письма'}
-              onChange={onChange}
+              onChange={handleChange}
               value={form.token}
               name={'token'}
               error={false}
@@ -67,7 +64,6 @@ const ResetPasswordPage = () => {
         </>
       }
     </main>
-
   )
 };
 

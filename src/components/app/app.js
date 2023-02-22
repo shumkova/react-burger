@@ -63,10 +63,10 @@ const App = () => {
             <Routes location={backgroundLocation || location}>
               <Route path={'/'} element={<MainPage />} />
               <Route path={'/ingredients/:id'} element={<IngredientPage />} />
-              <Route path={'/login'} element={<ProtectedRoute userPage={false} element={<LoginPage />} />} />
-              <Route path={'/register'} element={<ProtectedRoute userPage={false} element={<RegisterPage />} />} />
-              <Route path={'/forgot-password'} element={<ProtectedRoute userPage={false} element={<ForgotPasswordPage />} />} />
-              <Route path={'/reset-password'} element={<ProtectedRoute userPage={false} element={<ResetPassword />} />} />
+              <Route path={'/login'} element={<ProtectedRoute anonymous={true} element={<LoginPage />} />} />
+              <Route path={'/register'} element={<ProtectedRoute anonymous={true} element={<RegisterPage />} />} />
+              <Route path={'/forgot-password'} element={<ProtectedRoute anonymous={true} element={<ForgotPasswordPage />} />} />
+              <Route path={'/reset-password'} element={<ProtectedRoute anonymous={true} element={<ResetPassword />} />} />
               <Route path={'/profile'} element={<ProtectedRoute element={<ProfilePage />} />}>
                 <Route path={''} element={<ProtectedRoute element={<ProfileInfo />} />} index />
                 <Route path={'orders'} element={<ProtectedRoute element={<OrdersPage />} />} />
