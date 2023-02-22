@@ -12,8 +12,15 @@ import {
   UPDATE_USER_REQUEST,
   UPDATE_USER_FAILED,
   UPDATE_USER_SUCCESS,
-  FORGOT_PASSWORD_REQUEST, FORGOT_PASSWORD_FAILED, FORGOT_PASSWORD_SUCCESS,
-  RESET_PASSWORD_REQUEST, RESET_PASSWORD_FAILED, RESET_PASSWORD_SUCCESS
+  FORGOT_PASSWORD_REQUEST,
+  FORGOT_PASSWORD_FAILED,
+  FORGOT_PASSWORD_SUCCESS,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_FAILED,
+  RESET_PASSWORD_SUCCESS,
+  REGISTER_REQUEST,
+  REGISTER_FAILED,
+  REGISTER_SUCCESS
 } from '../actions/auth';
 
 const authInitialState = {
@@ -34,7 +41,9 @@ const authInitialState = {
   resetPasswordRequest: false,
   resetPasswordFailed: false,
   resetPasswordSuccess: false,
-  userError: ''
+  registerRequest: false,
+  registerFailed: false,
+  userError: null
 }
 
 export const authReducer = (state = authInitialState, action) => {
@@ -53,7 +62,8 @@ export const authReducer = (state = authInitialState, action) => {
         user: action.user,
         userRequest: false,
         userFailed: false,
-        userLoaded: true
+        userLoaded: true,
+        userError: null
       }
     }
     case GET_USER_FAILED: {
@@ -91,7 +101,8 @@ export const authReducer = (state = authInitialState, action) => {
         ...state,
         updateUserRequest: false,
         updateUserFailed: false,
-        user: action.user
+        user: action.user,
+        userError: null
       }
     }
 
@@ -114,7 +125,8 @@ export const authReducer = (state = authInitialState, action) => {
         ...state,
         loginRequest: false,
         loginFailed: false,
-        loggedIn: true
+        loggedIn: true,
+        userError: null
       }
     }
 
@@ -138,7 +150,8 @@ export const authReducer = (state = authInitialState, action) => {
         ...state,
         user: null,
         userLoaded: true,
-        loggedIn: false
+        loggedIn: false,
+        userError: null
       }
     }
 
@@ -163,7 +176,8 @@ export const authReducer = (state = authInitialState, action) => {
         ...state,
         forgotPasswordRequest: false,
         forgotPasswordFailed: false,
-        forgotPasswordSuccess: true
+        forgotPasswordSuccess: true,
+        userError: null
       }
     }
 
@@ -188,7 +202,34 @@ export const authReducer = (state = authInitialState, action) => {
         ...state,
         resetPasswordRequest: false,
         resetPasswordFailed: false,
-        forgotPasswordSuccess: true
+        forgotPasswordSuccess: true,
+        userError: null
+      }
+    }
+
+    case REGISTER_REQUEST: {
+      return {
+        ...state,
+        registerRequest: true,
+        registerFailed: false
+      }
+    }
+
+    case REGISTER_FAILED: {
+      return {
+        ...state,
+        registerRequest: false,
+        registerFailed: true,
+        userError: action.err
+      }
+    }
+
+    case REGISTER_SUCCESS: {
+      return {
+        ...state,
+        registerRequest: false,
+        registerFailed: false,
+        userError: null
       }
     }
 

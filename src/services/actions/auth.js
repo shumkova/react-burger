@@ -6,19 +6,20 @@ import {
   registerRequest,
   updateUserRequest, forgotPasswordRequest, resetPasswordRequest
 } from '../auth-api';
-import {deleteCookie, getCookie, setCookie} from '../../utils/cookie';
+import {deleteCookie, setCookie} from '../../utils/cookie';
 
+export const GET_USER_REQUEST = 'GET_USER_REQUEST';
+export const GET_USER_FAILED = 'GET_USER_FAILED';
 export const GET_USER_SUCCESS = 'SET_USER';
+export const USER_LOADED = 'USER_LOADED';
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGIN = 'LOGIN';
 
+export const REGISTER_REQUEST = 'REGISTER_REQUEST';
 export const REGISTER_FAILED = 'REGISTER_FAILED';
-
-export const GET_USER_REQUEST = 'GET_USER_REQUEST';
-export const GET_USER_FAILED = 'GET_USER_FAILED';
-export const USER_LOADED = 'USER_LOADED';
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 
 export const UPDATE_USER_REQUEST = 'UPDATE_USER_REQUEST';
 export const UPDATE_USER_FAILED = 'UPDATE_USER_FAILED';
@@ -72,11 +73,9 @@ export const getUser = () => {
             type: GET_USER_SUCCESS,
             user: res.user
           })
-          if (getCookie('accessToken')) {
-            dispatch({
-              type: LOGIN
-            })
-          }
+          dispatch({
+            type: LOGIN
+          })
         }
       })
       .catch(err => {
@@ -150,6 +149,7 @@ export const signIn = (form, onSuccess) => {
             saveRefreshToken(res.refreshToken);
           }
           dispatch({ type: LOGIN });
+          localStorage.removeItem('loggedOut');
           if (onSuccess) {
             onSuccess();
           }
@@ -175,6 +175,7 @@ export const signOut = (successCb) => {
           dispatch({ type: LOGOUT });
           localStorage.removeItem('refreshToken');
           deleteCookie('accessToken');
+          localStorage.setItem('loggedOut', 'true');
           if (successCb) {
             successCb();
           }
@@ -191,6 +192,7 @@ export const signOut = (successCb) => {
 
 export const register = (form) => {
   return (dispatch) => {
+    dispatch({type: REGISTER_REQUEST});
     registerRequest(form)
       .then(res => {
         if (res && res.success) {
@@ -201,6 +203,9 @@ export const register = (form) => {
           if (res.refreshToken) {
             saveRefreshToken(res.refreshToken);
           }
+          dispatch({type: REGISTER_SUCCESS});
+          dispatch({type: USER_LOADED});
+          dispatch({type: LOGIN});
         } else {
           return Promise.reject('что-то пошло не так');
         }

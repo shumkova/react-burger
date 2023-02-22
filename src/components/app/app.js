@@ -1,10 +1,10 @@
-import React, { useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import ErrorBoundary from '../error-boundary/error-doundary';
 import { Route, Routes, useLocation} from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
 import { Loader } from '../../ui/loader/loader';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUser } from '../../services/actions/auth';
+import {getAccessToken, getUser, USER_LOADED} from '../../services/actions/auth';
 import { getIngredients } from '../../services/actions/ingredients';
 import ProfileInfo from '../profile-info/profile-info';
 import ModalIngredient from '../modal-ingredient';
@@ -21,18 +21,38 @@ import {
   OrdersPage,
   IngredientPage
 } from '../../pages/index';
+import {getCookie} from "../../utils/cookie";
 
 const App = () => {
   const dispatch = useDispatch();
-  const { userLoaded } = useSelector(state => state.auth);
+  const { user, userLoaded } = useSelector(state => state.auth);
   const { ingredients, ingredientsFailed } = useSelector(state => state.ingredients);
   const location = useLocation();
   const backgroundLocation = location.state && location.state.backgroundLocation;
 
+  const checkUser = useCallback(() => { // минимизация запросов к серверу для определения пользователя
+    const accessToken = getCookie('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const loggedOut = localStorage.getItem('loggedOut'); // пометка о том, что пользователь сам вышел из приложения, значит нет необходимости его автоматически логинить
+
+    if (loggedOut || user) {
+      dispatch({type: USER_LOADED});
+      return;
+    }
+
+    if (accessToken) {
+      dispatch(getUser());
+    } else if (refreshToken) {
+      dispatch(getAccessToken());
+    } else {
+      dispatch({type: USER_LOADED});
+    }
+  }, [user, dispatch]);
+
   useEffect(() => {
-    dispatch(getUser());
+    checkUser();
     dispatch(getIngredients());
-  }, [dispatch]);
+  }, [checkUser, dispatch]);
 
   return (
     <ErrorBoundary>
