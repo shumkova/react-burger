@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './ingredient-types.module.css';
-import Ingredient from '../ingredient/ingredient';
+import IngredientCard from '../ingredient-card/ingredient-card';
 import PropTypes from 'prop-types';
 import {ingredientPropTypes} from '../../utils/proptypes';
 
@@ -12,7 +12,7 @@ const IngredientTypes = ({ type, title, sectionList }) => {
         {sectionList.map((item, index) => {
           return (
             <li className={styles.item} key={item['_id']} tabIndex={0}>
-              <Ingredient data={item}/>
+              <IngredientCard data={item}/>
             </li>
           )
         })}

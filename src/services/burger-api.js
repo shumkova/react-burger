@@ -1,15 +1,9 @@
-const baseUrl = 'https://norma.nomoreparties.space/api';
+import { request } from './base-api';
 
-const checkResponse = (res) => {
-  return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-}
-
-const getIngredientsRequest = () => {
-  return fetch(`${baseUrl}/ingredients`).then(checkResponse)
-}
+const getIngredientsRequest = () => request('ingredients');
 
 const placeOrderRequest = (ingredientsArr) => {
-  return fetch(`${baseUrl}/orders`, {
+  return request('orders', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -17,7 +11,7 @@ const placeOrderRequest = (ingredientsArr) => {
     body: JSON.stringify({
       'ingredients': ingredientsArr
     })
-  }).then(checkResponse)
+  })
 }
 
-export {getIngredientsRequest, placeOrderRequest};
+export { getIngredientsRequest, placeOrderRequest};

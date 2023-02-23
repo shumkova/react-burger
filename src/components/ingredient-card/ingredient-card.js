@@ -1,11 +1,11 @@
 import React from 'react';
-import styles from './ingredient.module.css';
+import styles from './ingredient-card.module.css';
 import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { ingredientPropTypes } from '../../utils/proptypes';
 import { useDrag } from 'react-dnd';
 import { BUN } from '../../utils/consts';
 
-const Ingredient = ({ data }) => {
+const IngredientCard = ({ data }) => {
   const id = data['_id'];
   const chosenBun = data.type === BUN && data['__v'] > 0;
 
@@ -40,8 +40,8 @@ const Ingredient = ({ data }) => {
   )
 }
 
-Ingredient.propTypes = {
+IngredientCard.propTypes = {
   data: ingredientPropTypes.isRequired,
 };
 
-export default Ingredient;
+export default IngredientCard;

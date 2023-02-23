@@ -46,7 +46,7 @@ const BurgerConstructor = memo(({ onDropHandler }) => {
         <ConstructorElement
           type="top"
           isLocked={true}
-          text={bun.name}
+          text={bun.name + ' (верх)'}
           price={bun.price}
           thumbnail={bun.image}
           extraClass={`ml-8 mb-4 ${styles.element}`}
@@ -67,7 +67,7 @@ const BurgerConstructor = memo(({ onDropHandler }) => {
         <ConstructorElement
           type="bottom"
           isLocked={true}
-          text={bun.name}
+          text={bun.name + ' (низ)'}
           price={bun.price}
           thumbnail={bun.image}
           extraClass={`ml-8 mt-4 ${styles.element}`}

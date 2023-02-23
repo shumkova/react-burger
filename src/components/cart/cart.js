@@ -10,28 +10,28 @@ import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../servic
 import { countSum } from './cart.utils';
 import OrderModal from '../order-modal/order-modal';
 import { BUN } from '../../utils/consts';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
-  const dispatch = useDispatch();
   const constructorIngredients = useSelector(state => state.constructorIngredients);
+  const { user } = useSelector(state => state.auth);
   const { orderInfo } = useSelector(state => state.order);
   const { ingredients } = useSelector(state => state.ingredients);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const closeOrderModal = () => {
-    dispatch({
-      type: CLEAR_ORDER_INFO
-    })
+    dispatch({ type: CLEAR_ORDER_INFO });
   }
 
   const orderSum = useMemo(() => {
     return countSum(constructorIngredients);
   }, [constructorIngredients])
 
-
   const onOrderClick = (evt) => {
     evt.preventDefault();
     const ids = [constructorIngredients.bun['_id'], ...constructorIngredients.filling.map((item) => item['_id']), constructorIngredients.bun['_id']];
-    dispatch(placeOrder(ids));
+    user ? dispatch(placeOrder(ids)) : navigate('/login');
   }
 
   const handleDrop = (draggableItem) => {
@@ -76,7 +76,13 @@ const Cart = () => {
           <span className="text text_type_digits-medium">{orderSum}</span>
           <CurrencyIcon type={"primary"} />
         </p>
-        <Button htmlType="button" type="primary" size="large" onClick={onOrderClick} disabled={constructorIngredients.bun === null || !constructorIngredients.filling.length}>
+        <Button
+          htmlType="button"
+          type="primary"
+          size="large"
+          onClick={onOrderClick}
+          disabled={constructorIngredients.bun === null || !constructorIngredients.filling.length}
+        >
           Оформить заказ
         </Button>
       </div>

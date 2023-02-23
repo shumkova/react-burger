@@ -3,7 +3,7 @@ import {
   GET_INGREDIENTS_SUCCESS,
   GET_INGREDIENTS_FAILED,
   INCREASE_INGREDIENT_AMOUNT,
-  DECREASE_INGREDIENT_AMOUNT,
+  DECREASE_INGREDIENT_AMOUNT, RESET_INGREDIENTS,
 }
   from '../actions/ingredients';
 
@@ -56,6 +56,16 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
           item['_id'] === action.id ? {
             ...item,
             '__v': item['__v'] - 1
+          } : item
+        )}
+    }
+    case RESET_INGREDIENTS: {
+      return {
+        ...state,
+        ingredients: state.ingredients.map((item) =>
+          item.__v > 0 ? {
+            ...item,
+            '__v': 0
           } : item
         )}
     }

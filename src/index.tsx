@@ -8,6 +8,7 @@ import { legacy_createStore as createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from '@redux-devtools/extension';
+import { BrowserRouter } from 'react-router-dom';
 
 const enhancer = composeWithDevTools(applyMiddleware(thunk));
 
@@ -19,9 +20,11 @@ const store = createStore(rootReducer, enhancer);
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

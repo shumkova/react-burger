@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  padding-top: 40px;
+}
+
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+.tip {
+  opacity: 0.4;
+}
