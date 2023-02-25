@@ -1,0 +1,39 @@
+.content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 68px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.statistics {
+
+}
+
+.status {
+  display: flex;
+  justify-content: space-between;
+  gap: 36px;
+}
+
+.status__column {
+  flex-grow: 1;
+}
+
+.status__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.status__list_ready {
+  color: var(--colors-interface-success);
+}
+
+.status__listItem {
+
+}

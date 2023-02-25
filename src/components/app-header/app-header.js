@@ -19,8 +19,8 @@ const AppHeader = memo(() => {
               </Link>
             </li>
             <li>
-              <Link to={'/order'} className={`${styles.link} ${pathname === '/order' ? styles.link_active : ''} pt-4 pb-4 pl-5 pr-5`}>
-                <ListIcon type={pathname === '/order' ? 'primary' : 'secondary'} />
+              <Link to={'/feed'} className={`${styles.link} ${pathname === '/feed' ? styles.link_active : ''} pt-4 pb-4 pl-5 pr-5`}>
+                <ListIcon type={pathname === '/feed' ? 'primary' : 'secondary'} />
                 <span className="text text_type_main-default">Лента заказов</span>
               </Link>
             </li>

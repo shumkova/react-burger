@@ -21,10 +21,12 @@
 
 :root {
   --bg-color: #131316;
-  --text-color: #F2F2F3;
+  --text-color: #f2f2f3;
   --text--inactive-color: #8585ad;
   --number-ff: 'Iceland', monospace;
   --colors-interface-accent: #4c4cff;
+  --modal-bg-color: #1c1c21;
+  --colors-interface-success: #0cc;
 }
 
 body {

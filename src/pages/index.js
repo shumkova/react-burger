@@ -8,5 +8,6 @@ import ProfilePage from './profile';
 import NotFound from './not-found';
 import OrdersPage from './orders';
 import IngredientPage from './ingredient';
+import FeedPage from "./feed";
 
-export { Root, LoginPage, MainPage, RegisterPage, ForgotPasswordPage, ResetPassword, ProfilePage, NotFound, OrdersPage, IngredientPage };
+export { Root, LoginPage, MainPage, RegisterPage, ForgotPasswordPage, ResetPassword, ProfilePage, NotFound, OrdersPage, IngredientPage, FeedPage };
