@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useCallback, useEffect} from "react";
 import { Link } from "react-router-dom";
 import styles from './order-card.module.css'
 import { CurrencyIcon, FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
+import {useDispatch, useSelector} from "react-redux";
+import {SET_ACTIVE_ORDER} from "../../services/actions/ws";
 
 const images = [
   "https://code.s3.yandex.net/react/code/bun-02.png",
@@ -15,52 +17,67 @@ const images = [
 ];
 
 const OrderCard = ({ data }) => {
-  const dateFromServer = '2023-02-24T17:33:32.877Z';
+  const { ingredients } = useSelector(state => state.ingredients);
+  const dispatch = useDispatch();
 
-  const trimmedImages = [...images].splice(5 );
-  console.log(trimmedImages.length);
+  let orderIngredients = [];
+
+  if (data.ingredients) {
+    data.ingredients.forEach(item => {
+      const ingredient = ingredients.find(ing => ing._id === item);
+      if (ingredient) {
+        orderIngredients.push(ingredient);
+      }
+    });
+  }
+
+  const trimmedIngredients = [...orderIngredients].splice(5 );
 
 
-  return (
-    <Link to={''} className={`${styles.container} p-6`}>
-      <div className={`${styles.main}`}>
-        <p className="text text_type_digits-default">#034535</p>
-        <p className="text text_type_main-default text_color_inactive">
-          <FormattedDate date={new Date(dateFromServer)} />
-        </p>
-      </div>
+  if (orderIngredients.length > 0) {
+    return (
+      <Link to={`${data._id}`} className={`${styles.container} p-6`}>
+        <div className={`${styles.main}`}>
+          <p className="text text_type_digits-default">#{data.number}</p>
+          <p className="text text_type_main-default text_color_inactive">
+            <FormattedDate date={new Date(data.createdAt)} />
+          </p>
+        </div>
 
-      <h2 className="text text_type_main-medium mt-6 mb-6">Death Star Starship Main бургер</h2>
+        <h2 className="text text_type_main-medium mt-6 mb-6">{data.name}</h2>
 
-      <div className={styles.details}>
-        <ul className={styles.ingredients}>
-          {
-            images.map((image, index) => {
-              return index < 5 ? (
-                <li className={styles.ingredient} style={{zIndex: '-' + index}}>
-                  <img className={styles.image} src={image} key={index} alt={'ingredient'}/>
+        <div className={styles.details}>
+          <ul className={styles.ingredients}>
+            {
+              orderIngredients.map((item, index) => {
+                return index < 5 ? (
+                  <li className={styles.ingredient} style={{zIndex: '-' + index}}>
+                    <img className={'round-image'} src={item.image} key={index} alt={'ingredient'}/>
+                  </li>
+                ) : ''
+              })
+            }
+            {
+              trimmedIngredients.length > 0 && (
+                <li className={`${styles.ingredient} ${styles.ingredient_more}`} style={{zIndex: '-'+images.length}}>
+                  <span className={`${styles.count} text text text_type_main-default`}>{'+' + trimmedIngredients.length}</span>
+                  <img className={'round-image'} src={trimmedIngredients[0].image} key={images.length} alt={'ingredient'}/>
                 </li>
-              ) : ''
-            })
-          }
-          {
-            trimmedImages.length > 0 && (
-              <li className={`${styles.ingredient} ${styles.ingredient_more}`} style={{zIndex: '-'+images.length}}>
-                <span className={`${styles.count} text text text_type_main-default`}>{'+' + trimmedImages.length}</span>
-                <img className={styles.image} src={trimmedImages[0]} key={images.length} alt={'ingredient'}/>
-              </li>
-            )
-          }
-        </ul>
-        <p className={`${styles.price} text text_type_digits-default`}>
-          {/*{data.price}*/}
-          480
-          <CurrencyIcon type="primary" />
-        </p>
-      </div>
+              )
+            }
+          </ul>
+          <p className={`${styles.price} text text_type_digits-default`}>
+            {/*{data.price}*/}
+            {orderIngredients.reduce((acc, current) => acc + current.price, 0)}
+            <CurrencyIcon type="primary" />
+          </p>
+        </div>
 
-    </Link>
-  )
+      </Link>
+    )
+  }
+
+
 }
 
 export default OrderCard;

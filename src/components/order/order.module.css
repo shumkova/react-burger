@@ -1,0 +1,31 @@
+.id {
+  text-align: center;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.status_success {
+  color: var(--colors-interface-success);
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+}
+
+.ingredient__price,
+.price {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

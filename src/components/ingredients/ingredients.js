@@ -52,7 +52,7 @@ const Ingredients = memo(({ setCurrentTab }) => {
   }, [ingredients, sectionRef, setCurrentTab]);
 
   return (
-    <div className={styles.container} id="ingredients" onClick={onIngredientCLick} ref={sectionRef}>
+    <div className={`${styles.container} scroll`} id="ingredients" onClick={onIngredientCLick} ref={sectionRef}>
       <IngredientTypes type={BUN} title="Булки" sectionList={buns} />
       <IngredientTypes type={SAUCE} title="Соусы" sectionList={sauces} />
       <IngredientTypes type={MAIN} title="Начинки" sectionList={main} />

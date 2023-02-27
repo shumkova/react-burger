@@ -20,9 +20,11 @@ import {
   NotFound,
   OrdersPage,
   IngredientPage,
-  FeedPage
+  FeedPage,
+  OrderPage
 } from '../../pages/index';
 import {getCookie} from "../../utils/cookie";
+import Order from "../order/order";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -50,8 +52,6 @@ const App = () => {
     }
   }, [user, dispatch]);
 
-  console.log(ingredients);
-
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
@@ -75,6 +75,7 @@ const App = () => {
                 <Route path={'orders'} element={<ProtectedRoute element={<OrdersPage />} />} />
               </Route>
               <Route path={'/feed'} element={<FeedPage />} />
+              <Route path={'/feed/:id'} element={<OrderPage />} />
               <Route path={'*'} element={<NotFound />} />
             </Routes>
             {backgroundLocation && (

@@ -9,5 +9,6 @@ import NotFound from './not-found';
 import OrdersPage from './orders';
 import IngredientPage from './ingredient';
 import FeedPage from "./feed";
+import OrderPage from "./order";
 
-export { Root, LoginPage, MainPage, RegisterPage, ForgotPasswordPage, ResetPassword, ProfilePage, NotFound, OrdersPage, IngredientPage, FeedPage };
+export { Root, LoginPage, MainPage, RegisterPage, ForgotPasswordPage, ResetPassword, ProfilePage, NotFound, OrdersPage, IngredientPage, FeedPage, OrderPage };
