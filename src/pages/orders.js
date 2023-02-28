@@ -5,7 +5,6 @@ import OrderCard from '../components/order-card/order-card';
 const OrdersPage = () => {
   const { userOrders, wsUserOrdersConnected } = useSelector(state => state.userOrders);
 
-
   if (wsUserOrdersConnected && userOrders.length === 0) {
     return (
       <p>Вы ещё ничего у нас не заказывали</p>

@@ -18,3 +18,9 @@ export const formatIngredients = (orderIngs, allIngs) => {
 export const countOrderSum = (ingredients) => {
   return ingredients.reduce((acc, current) => acc + current.price * current.__v, 0)
 }
+
+export const orderStatus = {
+  created: 'Создан',
+  pending: 'Готовится',
+  done: 'Выполнен',
+}

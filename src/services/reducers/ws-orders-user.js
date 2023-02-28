@@ -10,6 +10,8 @@ const initialState = {
   wsUserOrdersConnected: false,
   wsUserOrdersConnecting : false,
   userOrders: [],
+  userTotal: 0,
+  userTotalToday: 0,
   userOrdersError: null
 };
 
@@ -47,6 +49,8 @@ export const wsUserOrdersReducer = (state = initialState, action) => {
       return {
         ...state,
         userOrders: action.orders,
+        userTotal: action.total,
+        userTotalToday: action.totalToday
       }
     }
     default: {

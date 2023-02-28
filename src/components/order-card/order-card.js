@@ -1,15 +1,18 @@
-import React, { useMemo } from 'react';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import React, { useMemo, useCallback } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './order-card.module.css'
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector } from 'react-redux';
 import { formatIngredients, countOrderSum } from '../order/order-utils';
-
+import { orderStatus } from '../order/order-utils';
+import PropTypes from 'prop-types';
+import { orderPropTypes } from '../../utils/proptypes';
 
 const OrderCard = ({ data , link }) => {
   const { ingredients } = useSelector(state => state.ingredients);
   const navigate = useNavigate();
   const location = useLocation();
+  const isUser = location.pathname.includes('orders');
 
   const orderIngredients = useMemo(() => {
     return formatIngredients(data.ingredients, ingredients);
@@ -18,10 +21,13 @@ const OrderCard = ({ data , link }) => {
   const sum = useMemo(() => {return countOrderSum(orderIngredients)}, [orderIngredients]);
   const trimmedIngredients = useMemo(() => [...orderIngredients].splice(5 ), [orderIngredients]);
 
-  const handleClick = (evt) => {
+  const UTCOffset = useMemo(() => new Date(data.createdAt).getTimezoneOffset() / 60, [data.createdAt]);
+  const GMTString = useMemo(() => `i-GMT${UTCOffset > 0 ? '-' : '+'}${Math.abs(UTCOffset)}`, [UTCOffset]);
+
+  const handleClick = useCallback((evt) => {
     evt.preventDefault();
     navigate(`${link}${data._id}`, {state: {...location.state, backgroundLocation: location}});
-  }
+  }, [navigate, data._id, link, location]);
 
   if (orderIngredients.length > 0) {
     return (
@@ -33,13 +39,14 @@ const OrderCard = ({ data , link }) => {
         <div className={`${styles.main}`}>
           <p className="text text_type_digits-default">#{data.number}</p>
           <p className="text text_type_main-default text_color_inactive">
-            <FormattedDate date={new Date(data.createdAt)} />
+            <FormattedDate date={new Date(data.createdAt)} /> {GMTString}
           </p>
         </div>
-
-        <h2 className="text text_type_main-medium mt-6 mb-6">{data.name}</h2>
-
-        <div className={styles.details}>
+        <h2 className="text text_type_main-medium mt-6 mb-2">{data.name}</h2>
+        {
+          isUser && <p className={`text text_type_main-default mb-2 ${data.status === 'done' ? styles.status_ready : ''}`}>{orderStatus[data.status]}</p>
+        }
+        <div className={`${styles.details} mt-4`}>
           <ul className={styles.ingredients}>
             {
               orderIngredients.map((item, index) => {
@@ -68,5 +75,10 @@ const OrderCard = ({ data , link }) => {
     )
   }
 }
+
+OrderCard.propTypes = {
+  data: orderPropTypes,
+  link: PropTypes.string.isRequired
+};
 
 export default OrderCard;

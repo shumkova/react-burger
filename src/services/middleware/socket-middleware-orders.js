@@ -13,21 +13,16 @@ export const socketMiddlewareOrders = (wsUrl, wsActions) => {
 
       if (socket) {
         socket.onopen = event => {
-          // console.log('onopen event');
-          // console.log(event);
           dispatch({type: onOpen, payload: event});
         }
 
         socket.onerror = event => {
-          // console.log('onerror event');
-          // console.log(event);
           dispatch({type: onError, payload: event});
         }
 
         socket.onmessage = event => {
           const { data } = event;
           const parsedData = JSON.parse(data);
-          // console.log(parsedData);
           const { success, ...restParsedData } = parsedData;
           dispatch({type: onOrders, ...restParsedData});
         }

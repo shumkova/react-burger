@@ -15,17 +15,27 @@
 .status {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 36px;
 }
 
 .status__column {
   flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.status__title {
+  width: 100%;
 }
 
 .status__list {
+
   list-style: none;
   padding: 0;
   margin: 0;
+  max-height: 320px;
 }
 
 .status__list_ready {

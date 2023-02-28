@@ -2,14 +2,8 @@ import React, {useMemo} from "react";
 import styles from './order.module.css';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector } from 'react-redux';
-import { formatIngredients, countOrderSum } from './order-utils';
-
-const orderStatus = {
-  created: '',
-  pending: 'Готовится',
-  done: 'Выполнен',
-
-}
+import { formatIngredients, countOrderSum, orderStatus } from './order-utils';
+import { orderPropTypes } from '../../utils/proptypes';
 
 const Order = ({ order }) => {
   const { ingredients } = useSelector(state => state.ingredients);
@@ -17,6 +11,9 @@ const Order = ({ order }) => {
   const orderIngredients = useMemo(() => {
     return formatIngredients(order.ingredients, ingredients);
   }, [order, ingredients]);
+
+  const UTCOffset = useMemo(() => new Date(order.createdAt).getTimezoneOffset() / 60, [order.createdAt]);
+  const GMTString = useMemo(() => `i-GMT${UTCOffset > 0 ? '-' : '+'}${Math.abs(UTCOffset)}`, [UTCOffset]);
 
   const totalPrice = useMemo(() => {
     return countOrderSum(orderIngredients);
@@ -46,7 +43,7 @@ const Order = ({ order }) => {
       </ul>
       <div className={`${styles.footer} mt-10`}>
         <p className="text text_type_main-default text_color_inactive">
-          <FormattedDate date={new Date('2023-02-24T17:33:32.877Z')} />
+          <FormattedDate date={new Date(order.createdAt)} />  {GMTString}
         </p>
         <p className={`${styles.price} text text_type_digits-default`}>
           {totalPrice}
@@ -55,6 +52,10 @@ const Order = ({ order }) => {
       </div>
     </section>
   )
+};
+
+Order.propTypes = {
+  order: orderPropTypes
 };
 
 export default Order;

@@ -37,7 +37,6 @@ const App = () => {
   const location = useLocation();
   const backgroundLocation = location.state && location.state.backgroundLocation;
 
-  const socketNeeded = location.pathname.includes('feed') || location.pathname.includes('orders');
   const accessToken = getCookie('accessToken');
   const refreshToken = localStorage.getItem('refreshToken');
 
@@ -57,22 +56,12 @@ const App = () => {
     } else {
       dispatch({type: USER_LOADED});
     }
-  }, [user, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, dispatch, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
   }, [checkUser, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (socketNeeded && !wsOrdersConnected && !wsOrdersConnecting) {
-      if (location.pathname.includes('feed')) {
-        dispatch({
-          type: WS_ORDERS_START
-        });
-      }
-    }
-  }, [location.pathname, socketNeeded, wsOrdersConnected, wsOrdersConnecting]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (location.pathname.includes('feed') && !wsOrdersConnected) {
@@ -88,11 +77,11 @@ const App = () => {
         type: WS_USER_ORDERS_START
       })
     }
-  }, [location.pathname, wsUserOrdersConnected, wsUserOrdersConnecting, dispatch, accessToken]);
+  }, [location.pathname, wsUserOrdersConnected, wsUserOrdersConnecting, dispatch, accessToken, user]);
 
   return (
     <ErrorBoundary>
-      {ingredientsFailed || ordersError ? <ErrorMessage /> :
+      {ingredientsFailed || ordersError || userOrdersError ? <ErrorMessage /> :
         userLoaded && ingredients.length > 0 ?
           (<div className="page">
             <AppHeader />
@@ -109,14 +98,14 @@ const App = () => {
               </Route>
               <Route path={'/feed'} element={<FeedPage />} />
               <Route path={'/feed/:id'} element={<OrderPage />} />
-              <Route path={'/profile/orders/:id'} element={<OrderPage />} />
+              <Route path={'/profile/orders/:id'} element={<ProtectedRoute element={<OrderPage />}/> } />
               <Route path={'*'} element={<NotFound />} />
             </Routes>
             {backgroundLocation && (
               <Routes>
                 <Route path="/ingredients/:id" element={<ModalIngredient />} />
                 <Route path="/feed/:id" element={<ModalOrderInfo />} />
-                <Route path="/profile/orders/:id" element={<ModalOrderInfo />} />
+                <Route path="/profile/orders/:id" element={<ProtectedRoute element={<ModalOrderInfo />}/>} />
               </Routes>
             )}
           </div>)

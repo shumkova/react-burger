@@ -1,4 +1,4 @@
-import {getCookie} from "../../utils/cookie";
+import { getCookie } from '../../utils/cookie';
 
 export const socketMiddlewareUserOrders = (wsUrl, wsActions) => {
   return store => {
@@ -17,22 +17,18 @@ export const socketMiddlewareUserOrders = (wsUrl, wsActions) => {
 
       if (socket) {
         socket.onopen = event => {
-          // console.log('onopen event');
-          // console.log(event);
           dispatch({type: onOpen, payload: event});
         }
 
         socket.onerror = event => {
-          // console.log('onerror event');
-          // console.log(event);
           dispatch({type: onError, payload: event});
         }
 
         socket.onmessage = event => {
           const { data } = event;
           const parsedData = JSON.parse(data);
-          const { orders } = parsedData;
-          dispatch({type: onOrders, orders});
+          const { success, ...restParsedData } = parsedData;
+          dispatch({type: onOrders, ...restParsedData});
         }
 
         socket.onclose = event => {

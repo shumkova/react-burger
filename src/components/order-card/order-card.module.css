@@ -20,6 +20,10 @@
   align-items: center;
 }
 
+.status_ready {
+  color: var(--colors-interface-success);
+}
+
 .details {
   display: flex;
   justify-content: space-between;
