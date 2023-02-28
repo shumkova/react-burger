@@ -2,26 +2,44 @@ import { composeWithDevTools } from '@redux-devtools/extension';
 import { legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { rootReducer } from './reducers';
-import { socketMiddleware } from './middleware/socketMiddleware';
+import { socketMiddlewareOrders } from './middleware/socket-middleware-orders';
+import { socketMiddlewareUserOrders } from './middleware/socket-middleware-user-orders';
+
 import {
-  WS_CONNECTION_ERROR,
-  WS_CONNECTION_START_ALL,
-  WS_CONNECTION_START_USER,
-  WS_CONNECTION_SUCCESS,
+  WS_ORDERS_START,
+  WS_ORDERS_SUCCESS,
+  WS_ORDERS_ERROR,
+  WS_ORDERS_CLOSED,
   WS_GET_ORDERS
-} from './actions/ws';
+} from './actions/ws-orders';
+
+import {
+  WS_USER_ORDERS_START,
+  WS_USER_ORDERS_SUCCESS,
+  WS_USER_ORDERS_ERROR,
+  WS_USER_ORDERS_CLOSED,
+  WS_GET_USER_ORDERS
+} from './actions/ws-orders-user';
 
 const wsUrl = 'wss://norma.nomoreparties.space/orders';
 
-const wsActions = {
-  wsInitAll: WS_CONNECTION_START_ALL,
-  wsInitUser: WS_CONNECTION_START_USER,
-  onOpen: WS_CONNECTION_SUCCESS,
-  onError: WS_CONNECTION_ERROR,
+const wsActionsAll = {
+  wsInit: WS_ORDERS_START,
+  onOpen: WS_ORDERS_SUCCESS,
+  onError: WS_ORDERS_ERROR,
+  onClose: WS_ORDERS_CLOSED,
   onOrders: WS_GET_ORDERS
 };
 
-const enhancer = composeWithDevTools(applyMiddleware(thunk, socketMiddleware(wsUrl, wsActions)));
+const wsActionsUser = {
+  wsInit: WS_USER_ORDERS_START,
+  onOpen: WS_USER_ORDERS_SUCCESS,
+  onError: WS_USER_ORDERS_ERROR,
+  onClose: WS_USER_ORDERS_CLOSED,
+  onOrders: WS_GET_USER_ORDERS
+};
+
+const enhancer = composeWithDevTools(applyMiddleware(thunk, socketMiddlewareOrders(wsUrl, wsActionsAll), socketMiddlewareUserOrders(wsUrl, wsActionsUser)));
 
 export const initStore = (initialState = {}) =>
   createStore(

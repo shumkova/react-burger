@@ -1,42 +1,35 @@
-import React, {useCallback, useEffect} from "react";
-import { Link } from "react-router-dom";
+import React, { useMemo } from 'react';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import styles from './order-card.module.css'
-import { CurrencyIcon, FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
-import {useDispatch, useSelector} from "react-redux";
-import {SET_ACTIVE_ORDER} from "../../services/actions/ws";
+import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useSelector } from 'react-redux';
+import { formatIngredients, countOrderSum } from '../order/order-utils';
 
-const images = [
-  "https://code.s3.yandex.net/react/code/bun-02.png",
-  "https://code.s3.yandex.net/react/code/bun-01.png",
-  "https://code.s3.yandex.net/react/code/meat-03.png",
-  "https://code.s3.yandex.net/react/code/meat-02.png",
-  "https://code.s3.yandex.net/react/code/meat-04.png",
-  "https://code.s3.yandex.net/react/code/bun-02.png",
-  "https://code.s3.yandex.net/react/code/bun-01.png",
-  "https://code.s3.yandex.net/react/code/meat-03.png",
-];
 
-const OrderCard = ({ data }) => {
+const OrderCard = ({ data , link }) => {
   const { ingredients } = useSelector(state => state.ingredients);
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  let orderIngredients = [];
+  const orderIngredients = useMemo(() => {
+    return formatIngredients(data.ingredients, ingredients);
+  }, [ingredients, data.ingredients]);
 
-  if (data.ingredients) {
-    data.ingredients.forEach(item => {
-      const ingredient = ingredients.find(ing => ing._id === item);
-      if (ingredient) {
-        orderIngredients.push(ingredient);
-      }
-    });
+  const sum = useMemo(() => {return countOrderSum(orderIngredients)}, [orderIngredients]);
+  const trimmedIngredients = useMemo(() => [...orderIngredients].splice(5 ), [orderIngredients]);
+
+  const handleClick = (evt) => {
+    evt.preventDefault();
+    navigate(`${link}${data._id}`, {state: {...location.state, backgroundLocation: location}});
   }
-
-  const trimmedIngredients = [...orderIngredients].splice(5 );
-
 
   if (orderIngredients.length > 0) {
     return (
-      <Link to={`${data._id}`} className={`${styles.container} p-6`}>
+      <Link
+        to={`${data._id}`}
+        onClick={handleClick}
+        className={`${styles.container} p-6`}
+      >
         <div className={`${styles.main}`}>
           <p className="text text_type_digits-default">#{data.number}</p>
           <p className="text text_type_main-default text_color_inactive">
@@ -51,7 +44,7 @@ const OrderCard = ({ data }) => {
             {
               orderIngredients.map((item, index) => {
                 return index < 5 ? (
-                  <li className={styles.ingredient} style={{zIndex: '-' + index}}>
+                  <li className={styles.ingredient} style={{zIndex: '-' + index}} key={index}>
                     <img className={'round-image'} src={item.image} key={index} alt={'ingredient'}/>
                   </li>
                 ) : ''
@@ -59,25 +52,21 @@ const OrderCard = ({ data }) => {
             }
             {
               trimmedIngredients.length > 0 && (
-                <li className={`${styles.ingredient} ${styles.ingredient_more}`} style={{zIndex: '-'+images.length}}>
+                <li className={`${styles.ingredient} ${styles.ingredient_more}`} style={{zIndex: '-'+ orderIngredients.length}}>
                   <span className={`${styles.count} text text text_type_main-default`}>{'+' + trimmedIngredients.length}</span>
-                  <img className={'round-image'} src={trimmedIngredients[0].image} key={images.length} alt={'ingredient'}/>
+                  <img className={'round-image'} src={trimmedIngredients[0].image} key={trimmedIngredients.length} alt={'ingredient'}/>
                 </li>
               )
             }
           </ul>
           <p className={`${styles.price} text text_type_digits-default`}>
-            {/*{data.price}*/}
-            {orderIngredients.reduce((acc, current) => acc + current.price, 0)}
+            {sum}
             <CurrencyIcon type="primary" />
           </p>
         </div>
-
       </Link>
     )
   }
-
-
 }
 
 export default OrderCard;

@@ -1,19 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useMemo }  from 'react';
 import styles from './feed.module.css';
 import OrderCard from '../components/order-card/order-card';
-import Modal from "../components/modal/modal";
-import Order from "../components/order/order";
-import {useDispatch, useSelector} from "react-redux";
-import {WS_CONNECTION_START_ALL} from "../services/actions/ws";
+import { useSelector } from 'react-redux';
 
 const FeedPage = () => {
-  const dispatch = useDispatch();
   const { orders, total, totalToday } = useSelector(state => state.orders);
-  const ready = orders.filter(order => order.status === 'done');
-
-  useEffect(() => {
-    dispatch({type: WS_CONNECTION_START_ALL});
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const ready = useMemo(() => orders.filter(order => order.status === 'done'), [orders]);
 
   if (orders.length) {
     return (
@@ -22,9 +14,9 @@ const FeedPage = () => {
         <div className={styles.content}>
           <section>
             <ul className={`${styles.list} scroll pr-2`}>
-              {orders.map(order => (
-                <li className={'mb-4'} key={order._id}>
-                  <OrderCard data={order}/>
+              {orders.map((order, index) => (
+                <li className={'mb-4'} key={index}>
+                  <OrderCard data={order} link={'/feed/'} />
                 </li>
               ))}
             </ul>
@@ -35,8 +27,8 @@ const FeedPage = () => {
                 <h2 className="text text_type_main-medium mb-6">Готовы:</h2>
                 <ul className={`${styles.status__list} ${styles.status__list_ready}`}>
                   {
-                    ready && ready.map(order => (
-                      <li className={'text text_type_digits-default mb-2'} key={order._id}>{order.number}</li>
+                    ready && ready.map((order, index) => (
+                      <li className={'text text_type_digits-default mb-2'} key={index}>{order.number}</li>
                     ))
                   }
                 </ul>
@@ -44,8 +36,8 @@ const FeedPage = () => {
               <div className={styles.status__column}>
                 <h2 className="text text_type_main-medium mb-6">В работе:</h2>
                 <ul className={styles.status__list}>
-                  <li className={'text text_type_digits-default mb-2'}>034533</li>
-                  <li className={'text text_type_digits-default mb-2'}>034532</li>
+                  {/*<li className={'text text_type_digits-default mb-2'}>034533</li>*/}
+                  {/*<li className={'text text_type_digits-default mb-2'}>034532</li>*/}
                 </ul>
               </div>
             </div>
@@ -55,10 +47,6 @@ const FeedPage = () => {
             <p className="text text_type_digits-large">{totalToday}</p>
           </section>
         </div>
-
-        {/*<Modal onClose={() => {}}>*/}
-        {/*  <Order />*/}
-        {/*</Modal>*/}
       </main>
     )
   }

@@ -1,0 +1,5 @@
+export const WS_ORDERS_START = 'WS_ORDERS_START';
+export const WS_ORDERS_SUCCESS = 'WS_ORDERS_SUCCESS';
+export const WS_ORDERS_ERROR = 'WS_ORDERS_ERROR';
+export const WS_ORDERS_CLOSED = 'WS_ORDERS_CLOSED';
+export const WS_GET_ORDERS = 'WS_GET_ORDERS';

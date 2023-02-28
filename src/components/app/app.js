@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect } from 'react';
 import ErrorBoundary from '../error-boundary/error-doundary';
 import { Route, Routes, useLocation} from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
@@ -23,19 +23,26 @@ import {
   FeedPage,
   OrderPage
 } from '../../pages/index';
-import {getCookie} from "../../utils/cookie";
-import Order from "../order/order";
+import { getCookie } from '../../utils/cookie';
+import ModalOrderInfo from '../modal-order-info';
+import { WS_ORDERS_START } from '../../services/actions/ws-orders';
+import { WS_USER_ORDERS_START } from '../../services/actions/ws-orders-user';
 
 const App = () => {
   const dispatch = useDispatch();
+  const { wsOrdersConnected, wsOrdersConnecting, ordersError } = useSelector(state => state.orders);
+  const { wsUserOrdersConnected, wsUserOrdersConnecting, userOrdersError } = useSelector(state => state.userOrders);
   const { user, userLoaded } = useSelector(state => state.auth);
   const { ingredients, ingredientsFailed } = useSelector(state => state.ingredients);
   const location = useLocation();
   const backgroundLocation = location.state && location.state.backgroundLocation;
 
+  const socketNeeded = location.pathname.includes('feed') || location.pathname.includes('orders');
+  const accessToken = getCookie('accessToken');
+  const refreshToken = localStorage.getItem('refreshToken');
+
   const checkUser = useCallback(() => { // минимизация запросов к серверу для определения пользователя
-    const accessToken = getCookie('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+
     const loggedOut = localStorage.getItem('loggedOut'); // пометка о том, что пользователь сам вышел из приложения, значит нет необходимости его автоматически логинить
 
     if (loggedOut || user) {
@@ -50,16 +57,42 @@ const App = () => {
     } else {
       dispatch({type: USER_LOADED});
     }
-  }, [user, dispatch]);
+  }, [user, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
-  }, [checkUser, dispatch]);
+  }, [checkUser, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (socketNeeded && !wsOrdersConnected && !wsOrdersConnecting) {
+      if (location.pathname.includes('feed')) {
+        dispatch({
+          type: WS_ORDERS_START
+        });
+      }
+    }
+  }, [location.pathname, socketNeeded, wsOrdersConnected, wsOrdersConnecting]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (location.pathname.includes('feed') && !wsOrdersConnected) {
+      dispatch({
+        type: WS_ORDERS_START
+      });
+    }
+  }, [location.pathname, wsOrdersConnected, wsOrdersConnecting]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (location.pathname.includes('orders') && !wsUserOrdersConnected && accessToken) {
+      dispatch({
+        type: WS_USER_ORDERS_START
+      })
+    }
+  }, [location.pathname, wsUserOrdersConnected, wsUserOrdersConnecting, dispatch, accessToken]);
 
   return (
     <ErrorBoundary>
-      {ingredientsFailed ? <ErrorMessage /> :
+      {ingredientsFailed || ordersError ? <ErrorMessage /> :
         userLoaded && ingredients.length > 0 ?
           (<div className="page">
             <AppHeader />
@@ -76,11 +109,14 @@ const App = () => {
               </Route>
               <Route path={'/feed'} element={<FeedPage />} />
               <Route path={'/feed/:id'} element={<OrderPage />} />
+              <Route path={'/profile/orders/:id'} element={<OrderPage />} />
               <Route path={'*'} element={<NotFound />} />
             </Routes>
             {backgroundLocation && (
               <Routes>
                 <Route path="/ingredients/:id" element={<ModalIngredient />} />
+                <Route path="/feed/:id" element={<ModalOrderInfo />} />
+                <Route path="/profile/orders/:id" element={<ModalOrderInfo />} />
               </Routes>
             )}
           </div>)

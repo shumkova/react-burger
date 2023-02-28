@@ -9,11 +9,7 @@
   min-height: 580px;
   max-height: calc(100vh - 288px);
   list-style: none;
-  padding: 0;
-}
-
-.statistics {
-
+  padding-left: 0;
 }
 
 .status {

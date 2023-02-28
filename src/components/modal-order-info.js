@@ -1,13 +1,14 @@
-import React, { useMemo} from 'react';
-import styles from './ingredient.module.css';
-import {Navigate, useLocation, useParams} from 'react-router-dom';
+import React, {useMemo} from 'react';
+import Modal from './modal/modal';
 import { useSelector } from 'react-redux';
-import Order from '../components/order/order';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import Order from './order/order';
 
-const OrderPage = () => {
+const ModalOrderInfo = () => {
   const { orders } = useSelector(state => state.orders);
   const { userOrders } = useSelector(state => state.userOrders);
   const { id } = useParams();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const order = useMemo(() => {
@@ -20,19 +21,21 @@ const OrderPage = () => {
     }
   }, [orders, userOrders, id, pathname]);
 
+  const onModalClose = () => {
+    navigate(-1);
+  }
+
   if (orders.length > 0 && !order) {
     setTimeout(() => { // задержка для поиска по массиву заказов
-      return <Navigate to={'/404'} />
+      return null
     }, 100)
   }
 
-  if (order) {
-    return (
-      <main className={`${styles.container}`}>
-        <Order order={order}/>
-      </main>
-    )
-  }
+  return (
+    <Modal onClose={onModalClose} >
+      <Order order={order} />
+    </Modal>
+  )
 }
 
-export default OrderPage;
+export default ModalOrderInfo;
