@@ -1,11 +1,11 @@
 import React, {useMemo} from "react";
-import styles from './order.module.css';
+import styles from './order-info.module.css';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector } from 'react-redux';
-import { formatIngredients, countOrderSum, orderStatus } from './order-utils';
+import { formatIngredients, countOrderSum, orderStatus } from './order-info-utils';
 import { orderPropTypes } from '../../utils/proptypes';
 
-const Order = ({ order }) => {
+const OrderInfo = ({ order }) => {
   const { ingredients } = useSelector(state => state.ingredients);
 
   const orderIngredients = useMemo(() => {
@@ -20,7 +20,7 @@ const Order = ({ order }) => {
   }, [orderIngredients]);
 
   return (
-    <section>
+    <section className={styles.container}>
       <p className={`${styles.id} text text_type_digits-default mb-10`}>#{order.number}</p>
       <h1 className="text text_type_main-medium mb-3">{order.name}</h1>
       <p className={`${styles.status} ${order.status === 'done' ? styles.status_success : ''} text text_type_main-default mb-15`}>{orderStatus[order.status]}</p>
@@ -54,8 +54,8 @@ const Order = ({ order }) => {
   )
 };
 
-Order.propTypes = {
+OrderInfo.propTypes = {
   order: orderPropTypes
 };
 
-export default Order;
+export default OrderInfo;

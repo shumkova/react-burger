@@ -3,12 +3,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styles from './order-card.module.css'
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector } from 'react-redux';
-import { formatIngredients, countOrderSum } from '../order/order-utils';
-import { orderStatus } from '../order/order-utils';
+import { formatIngredients, countOrderSum, orderStatus } from '../order-info/order-info-utils';
 import PropTypes from 'prop-types';
 import { orderPropTypes } from '../../utils/proptypes';
 
-const OrderCard = ({ data , link }) => {
+const OrderCard = ({ data , path }) => {
   const { ingredients } = useSelector(state => state.ingredients);
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,8 +25,8 @@ const OrderCard = ({ data , link }) => {
 
   const handleClick = useCallback((evt) => {
     evt.preventDefault();
-    navigate(`${link}${data._id}`, {state: {...location.state, backgroundLocation: location}});
-  }, [navigate, data._id, link, location]);
+    navigate(path + data._id, {state: {...location.state, backgroundLocation: location}});
+  }, [navigate, data._id, path, location]);
 
   if (orderIngredients.length > 0) {
     return (
@@ -78,7 +77,7 @@ const OrderCard = ({ data , link }) => {
 
 OrderCard.propTypes = {
   data: orderPropTypes,
-  link: PropTypes.string.isRequired
+  path: PropTypes.string.isRequired
 };
 
 export default OrderCard;

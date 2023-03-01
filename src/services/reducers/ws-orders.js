@@ -1,33 +1,34 @@
 import {
-  WS_ORDERS_START,
   WS_ORDERS_SUCCESS,
   WS_ORDERS_ERROR,
+  WS_ORDERS_CLOSE,
   WS_ORDERS_CLOSED,
-  WS_GET_ORDERS
+  WS_GET_ORDERS,
+
+  WS_USER_ORDERS_SUCCESS,
+  WS_USER_ORDERS_ERROR,
+  WS_USER_ORDERS_CLOSE,
+  WS_USER_ORDERS_CLOSED,
+  WS_GET_USER_ORDERS
 } from '../actions/ws-orders';
 
 const initialState = {
   wsOrdersConnected: false,
-  wsOrdersConnecting : false,
+  wsUserOrdersConnected: false,
   orders: [],
+  userOrders: [],
   total: 0,
   totalToday: 0,
-  ordersError: null
+  ordersError: null,
+  userOrdersError: null
 };
 
-export const wsAllOrdersReducer = (state = initialState, action) => {
+export const wsOrdersReducer = (state = initialState, action) => {
   switch (action.type) {
-    case WS_ORDERS_START: {
-      return {
-        ...state,
-        wsOrdersConnecting: true,
-      }
-    }
     case WS_ORDERS_SUCCESS: {
       return {
         ...state,
         wsOrdersConnected: true,
-        wsOrdersConnecting: false,
         ordersError: null
       }
     }
@@ -35,8 +36,13 @@ export const wsAllOrdersReducer = (state = initialState, action) => {
       return {
         ...state,
         wsOrdersConnected: false,
-        wsOrdersConnecting: false,
         ordersError: action.payload
+      }
+    }
+    case WS_ORDERS_CLOSE: {
+      return {
+        ...state,
+        orders: [],
       }
     }
     case WS_ORDERS_CLOSED: {
@@ -53,6 +59,41 @@ export const wsAllOrdersReducer = (state = initialState, action) => {
         totalToday: action.totalToday
       }
     }
+
+    case WS_USER_ORDERS_SUCCESS: {
+      return {
+        ...state,
+        wsUserOrdersConnected: true,
+        userOrdersError: null
+      }
+    }
+    case WS_USER_ORDERS_ERROR: {
+      return {
+        ...state,
+        wsUserOrdersConnected: false,
+        userOrdersError: action.payload
+      }
+    }
+    case WS_USER_ORDERS_CLOSE: {
+      return {
+        ...state,
+        userOrders: [],
+      }
+    }
+    case WS_USER_ORDERS_CLOSED: {
+      return {
+        ...state,
+        userOrders: [],
+        wsUserOrdersConnected: false,
+      }
+    }
+    case WS_GET_USER_ORDERS: {
+      return {
+        ...state,
+        userOrders: action.orders,
+      }
+    }
+
     default: {
       return {...state}
     }

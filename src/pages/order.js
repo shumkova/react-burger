@@ -1,24 +1,45 @@
-import React, { useMemo} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import styles from './ingredient.module.css';
-import {Navigate, useLocation, useParams} from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import Order from '../components/order/order';
+import {Navigate, useNavigate, useParams} from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import OrderInfo from '../components/order-info/order-info';
+import { WS_ORDERS_CLOSE, WS_ORDERS_START, WS_USER_ORDERS_START, WS_USER_ORDERS_CLOSE } from '../services/actions/ws-orders';
+import Modal from '../components/modal/modal';
+import { Loader } from '../ui/loader/loader';
+import PropTypes from 'prop-types';
 
-const OrderPage = () => {
-  const { orders } = useSelector(state => state.orders);
-  const { userOrders } = useSelector(state => state.userOrders);
+const OrderPage = ({ privatePage = false, modal= false }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { wsOrdersConnected, wsUserOrdersConnected, orders, userOrders } = useSelector(state => state.orders);
+  const [ order, setOrder ] = useState(null);
   const { id } = useParams();
-  const { pathname } = useLocation();
+  const isSecondRender = useRef(false);
 
-  const order = useMemo(() => {
-    if (pathname.includes('feed')) {
-      return orders.find(item => item._id === id)
-    }
+  useEffect(() => {
+    if (!modal) {
+      wsOrdersConnected && dispatch({ type: WS_ORDERS_CLOSE });
+      wsUserOrdersConnected && dispatch({ type: WS_USER_ORDERS_CLOSE });
 
-    if (pathname.includes('orders')) {
-      return userOrders.find(item => item._id === id)
+      privatePage ?
+        isSecondRender.current && dispatch({ type: WS_USER_ORDERS_START }) :
+        isSecondRender.current && dispatch({ type: WS_ORDERS_START });
+
+      isSecondRender.current = true;
+
+      return () => {
+        dispatch({ type: WS_ORDERS_CLOSE });
+        dispatch({ type: WS_USER_ORDERS_CLOSE });
+      }
     }
-  }, [orders, userOrders, id, pathname]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    privatePage ?
+      setOrder(userOrders.find(item => item._id === id)) :
+      setOrder(orders.find(item => item._id === id));
+  }, [userOrders, orders, id, privatePage]);
+
 
   if (orders.length > 0 && !order) {
     setTimeout(() => { // задержка для поиска по массиву заказов
@@ -26,13 +47,28 @@ const OrderPage = () => {
     }, 100)
   }
 
-  if (order) {
-    return (
-      <main className={`${styles.container}`}>
-        <Order order={order}/>
-      </main>
-    )
-  }
+  const onModalClose = useCallback(() => {
+    navigate(-1);
+  }, [navigate]);
+
+  return order ?
+    modal ?
+      (
+        <Modal onClose={onModalClose} >
+          <OrderInfo order={order} />
+        </Modal>
+      )
+    : (
+        <main className={`${styles.container} container`}>
+          <OrderInfo order={order}/>
+        </main>
+      )
+    : <Loader size={'large'}/>
 }
+
+OrderPage.propTypes = ({
+  privatePage: PropTypes.bool,
+  modal: PropTypes.bool
+})
 
 export default OrderPage;

@@ -12,7 +12,13 @@ const MainPage = () => {
     <main className="main container pt-10">
       {
         orderRequest ?
-          <Loader size={'large'}/> :
+          (
+            <>
+              <Loader size={'large'}/>
+              <p className="text text_type_main-medium" style={{textAlign: 'center'}}>Отправляем ваш заказ на орбитальную станцию</p>
+            </>
+          )
+           :
           (
             <>
               <h1 className="main__title text text_type_main-large mb-5">Соберите бургер</h1>
