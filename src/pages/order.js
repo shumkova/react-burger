@@ -1,12 +1,13 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './ingredient.module.css';
-import {Navigate, useNavigate, useParams} from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import OrderInfo from '../components/order-info/order-info';
 import { WS_ORDERS_CLOSE, WS_ORDERS_START, WS_USER_ORDERS_START, WS_USER_ORDERS_CLOSE } from '../services/actions/ws-orders';
 import Modal from '../components/modal/modal';
 import { Loader } from '../ui/loader/loader';
 import PropTypes from 'prop-types';
+import { getCookie } from '../utils/cookie';
 
 const OrderPage = ({ privatePage = false, modal= false }) => {
   const dispatch = useDispatch();
@@ -22,8 +23,8 @@ const OrderPage = ({ privatePage = false, modal= false }) => {
       wsUserOrdersConnected && dispatch({ type: WS_USER_ORDERS_CLOSE });
 
       privatePage ?
-        isSecondRender.current && dispatch({ type: WS_USER_ORDERS_START }) :
-        isSecondRender.current && dispatch({ type: WS_ORDERS_START });
+        isSecondRender.current && dispatch({ type: WS_USER_ORDERS_START, payload: '?token=' + getCookie('accessToken') }) :
+        isSecondRender.current && dispatch({ type: WS_ORDERS_START, payload: '/all' });
 
       isSecondRender.current = true;
 

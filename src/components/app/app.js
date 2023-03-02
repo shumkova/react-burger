@@ -33,11 +33,10 @@ const App = () => {
   const location = useLocation();
   const backgroundLocation = location.state && location.state.backgroundLocation;
 
-  const accessToken = getCookie('accessToken');
-  const refreshToken = localStorage.getItem('refreshToken');
-
   const checkUser = useCallback(() => { // минимизация запросов к серверу для определения пользователя
     const loggedOut = localStorage.getItem('loggedOut'); // пометка о том, что пользователь сам вышел из приложения, значит нет необходимости его автоматически логинить
+    const accessToken = getCookie('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
 
     if (loggedOut || user) {
       dispatch({ type: USER_LOADED });
@@ -51,12 +50,12 @@ const App = () => {
     } else {
       dispatch({ type: USER_LOADED });
     }
-  }, [user, dispatch, accessToken]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
-  }, [checkUser, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ErrorBoundary>

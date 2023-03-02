@@ -4,6 +4,7 @@ import OrderCard from '../components/order-card/order-card';
 import { useDispatch, useSelector } from 'react-redux';
 import { WS_ORDERS_CLOSE, WS_ORDERS_START } from '../services/actions/ws-orders';
 import { Loader } from '../ui/loader/loader';
+import { wsUrlOrders } from '../services/store';
 
 const createArrayOfArrays = (bigArr, size) => {
   const arr = [];
@@ -27,7 +28,7 @@ const FeedPage = () => {
 
   useEffect(() => {
     wsOrdersConnected && dispatch({ type: WS_ORDERS_CLOSE });
-    isSecondRender.current && dispatch({ type: WS_ORDERS_START });
+    isSecondRender.current && dispatch({ type: WS_ORDERS_START, payload: '/all' });
     isSecondRender.current = true;
 
     return () => {
@@ -60,7 +61,7 @@ const FeedPage = () => {
                         <ul className={`${styles.status__list} ${styles.status__list_ready}`} key={index}>
                           {
                             columnArr.map((order, index) => (
-                              <li className={'text text_type_digits-default mb-2'} key={index}>{order.number}</li>
+                              <li className={'text text_type_digits-default mb-2'} key={order._id}>{order.number}</li>
                             ))
                           }
                         </ul>
@@ -74,7 +75,7 @@ const FeedPage = () => {
                         <ul className={`${styles.status__list}`} key={index}>
                           {
                             columnArr.map((order, index) => (
-                              <li className={'text text_type_digits-default mb-2'} key={index}>{order.number}</li>
+                              <li className={'text text_type_digits-default mb-2'} key={order._id}>{order.number}</li>
                             ))
                           }
                         </ul>
