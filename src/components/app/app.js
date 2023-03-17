@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect } from 'react';
 import ErrorBoundary from '../error-boundary/error-doundary';
 import { Route, Routes, useLocation} from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
@@ -19,24 +19,27 @@ import {
   ProfilePage,
   NotFound,
   OrdersPage,
-  IngredientPage
+  IngredientPage,
+  FeedPage,
+  OrderPage
 } from '../../pages/index';
-import {getCookie} from "../../utils/cookie";
+import { getCookie } from '../../utils/cookie';
 
 const App = () => {
   const dispatch = useDispatch();
+  const { ordersError, userOrdersError } = useSelector(state => state.orders);
   const { user, userLoaded } = useSelector(state => state.auth);
   const { ingredients, ingredientsFailed } = useSelector(state => state.ingredients);
   const location = useLocation();
   const backgroundLocation = location.state && location.state.backgroundLocation;
 
   const checkUser = useCallback(() => { // минимизация запросов к серверу для определения пользователя
+    const loggedOut = localStorage.getItem('loggedOut'); // пометка о том, что пользователь сам вышел из приложения, значит нет необходимости его автоматически логинить
     const accessToken = getCookie('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
-    const loggedOut = localStorage.getItem('loggedOut'); // пометка о том, что пользователь сам вышел из приложения, значит нет необходимости его автоматически логинить
 
     if (loggedOut || user) {
-      dispatch({type: USER_LOADED});
+      dispatch({ type: USER_LOADED });
       return;
     }
 
@@ -45,18 +48,18 @@ const App = () => {
     } else if (refreshToken) {
       dispatch(getAccessToken());
     } else {
-      dispatch({type: USER_LOADED});
+      dispatch({ type: USER_LOADED });
     }
-  }, [user, dispatch]);
+  }, [user, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     checkUser();
     dispatch(getIngredients());
-  }, [checkUser, dispatch]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ErrorBoundary>
-      {ingredientsFailed ? <ErrorMessage /> :
+      {ingredientsFailed || ordersError || userOrdersError ? <ErrorMessage /> :
         userLoaded && ingredients.length > 0 ?
           (<div className="page">
             <AppHeader />
@@ -71,11 +74,16 @@ const App = () => {
                 <Route path={''} element={<ProtectedRoute element={<ProfileInfo />} />} index />
                 <Route path={'orders'} element={<ProtectedRoute element={<OrdersPage />} />} />
               </Route>
+              <Route path={'/feed'} element={<FeedPage />} />
+              <Route path={'/feed/:id'} element={<OrderPage />} />
+              <Route path={'/profile/orders/:id'} element={<ProtectedRoute element={<OrderPage privatePage={true} />}/> } />
               <Route path={'*'} element={<NotFound />} />
             </Routes>
             {backgroundLocation && (
               <Routes>
                 <Route path="/ingredients/:id" element={<ModalIngredient />} />
+                <Route path="/feed/:id" element={<OrderPage modal={true} />} />
+                <Route path="/profile/orders/:id" element={<ProtectedRoute element={<OrderPage privatePage={true} modal={true} />}/>} />
               </Routes>
             )}
           </div>)

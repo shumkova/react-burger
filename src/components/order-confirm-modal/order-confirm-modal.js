@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import OrderDetails from '../order-details/order-details';
+import OrderConfirm from "../order-confirm/order-confirm";
 
-const OrderModal = () => {
+const OrderConfirmModal = () => {
   const { orderInfo, orderFailed } = useSelector(state => state.order);
 
   return !orderFailed && orderInfo.number ? (
-    <OrderDetails number={orderInfo.number}/>
+    <OrderConfirm number={orderInfo.number}/>
   ) : (
     <>
       <p className="text text_type_main-medium mb-4">Произошла ошибка.</p>
@@ -15,4 +15,4 @@ const OrderModal = () => {
   );
 }
 
-export default OrderModal;
+export default OrderConfirmModal;

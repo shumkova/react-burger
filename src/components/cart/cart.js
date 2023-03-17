@@ -8,9 +8,9 @@ import { CLEAR_ORDER_INFO, placeOrder} from '../../services/actions/order';
 import { DECREASE_INGREDIENT_AMOUNT, INCREASE_INGREDIENT_AMOUNT } from '../../services/actions/ingredients';
 import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../services/actions/burger-constructor';
 import { countSum } from './cart.utils';
-import OrderModal from '../order-modal/order-modal';
 import { BUN } from '../../utils/consts';
 import { useNavigate } from 'react-router-dom';
+import OrderConfirmModal from '../order-confirm-modal/order-confirm-modal';
 
 const Cart = () => {
   const constructorIngredients = useSelector(state => state.constructorIngredients);
@@ -89,7 +89,7 @@ const Cart = () => {
 
       {orderInfo.number && (
         <Modal onClose={closeOrderModal}>
-          <OrderModal />
+          <OrderConfirmModal />
         </Modal>
       )}
     </div>

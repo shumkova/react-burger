@@ -1,0 +1,6 @@
+.list {
+  margin-top: 0;
+  margin-bottom: 0;
+  min-height: 860px;
+  max-height: calc(100vh - 208px);
+}

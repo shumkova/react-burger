@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './order-details.module.css';
+import styles from './order-confirm.module.css';
 import PropTypes from 'prop-types';
 
-const OrderDetails = ({ number }) => {
+const OrderConfirm = ({ number }) => {
   return (
     <div className={styles.details}>
       <h2 className="text text_type_digits-large mb-8">{number}</h2>
@@ -14,8 +14,8 @@ const OrderDetails = ({ number }) => {
   )
 };
 
-OrderDetails.propTypes = {
+OrderConfirm.propTypes = {
   number: PropTypes.number.isRequired,
 }
 
-export default OrderDetails;
+export default OrderConfirm;

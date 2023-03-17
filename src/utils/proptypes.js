@@ -18,3 +18,12 @@ export const constructorIngredientsPropTypes = PropTypes.shape({
   bun: ingredientPropTypes,
   filling: PropTypes.arrayOf(ingredientPropTypes).isRequired
 });
+
+export const orderPropTypes = PropTypes.shape({
+  _id: PropTypes.string.isRequired,
+  ingredients: PropTypes.arrayOf(PropTypes.string).isRequired,
+  status: PropTypes.string.isRequired,
+  number: PropTypes.number.isRequired,
+  createdAt: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string.isRequired
+})
