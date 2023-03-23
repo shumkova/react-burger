@@ -3,18 +3,26 @@ import {
   GET_INGREDIENTS_SUCCESS,
   GET_INGREDIENTS_FAILED,
   INCREASE_INGREDIENT_AMOUNT,
-  DECREASE_INGREDIENT_AMOUNT, RESET_INGREDIENTS,
+  DECREASE_INGREDIENT_AMOUNT, RESET_INGREDIENTS, TIngredientsActions,
 }
   from '../actions/ingredients';
+import { TIngredient } from '../types/data';
 
-const ingredientsInitialState = {
+type TIngredientsState = {
+  ingredients: ReadonlyArray<TIngredient>;
+  ingredientsRequest: boolean;
+  ingredientsFailed: boolean;
+  ingredientsError: null | string
+}
+
+const ingredientsInitialState: TIngredientsState = {
   ingredients: [],
   ingredientsRequest: false,
   ingredientsFailed: false,
-  ingredientsError: ''
+  ingredientsError: null
 }
 
-export const ingredientsReducer = (state = ingredientsInitialState, action) => {
+export const ingredientsReducer = (state = ingredientsInitialState, action: TIngredientsActions) => {
   switch (action.type) {
     case GET_INGREDIENTS_REQUEST: {
       return {
@@ -28,6 +36,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
         ingredients: action.ingredients,
         ingredientsRequest: false,
         ingredientsFailed: false,
+        ingredientsError: null
       }
     }
     case GET_INGREDIENTS_FAILED: {
@@ -35,16 +44,16 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
         ingredients: [],
         ingredientsRequest: false,
         ingredientsFailed: true,
-        ingredientsError: action.text ? action.text : ''
+        ingredientsError: action.err
       }
     }
     case INCREASE_INGREDIENT_AMOUNT: {
       return {
         ...state,
         ingredients: state.ingredients.map((item) =>
-          item['_id'] === action.id ? {
+          item._id === action.id ? {
             ...item,
-            '__v': item['__v'] + 1
+            __v: item.__v + 1
           } : item
         )
       }
@@ -53,9 +62,9 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
       return {
         ...state,
         ingredients: state.ingredients.map((item) =>
-          item['_id'] === action.id ? {
+          item._id === action.id ? {
             ...item,
-            '__v': item['__v'] - 1
+            __v: item.__v - 1
           } : item
         )}
     }
@@ -65,7 +74,7 @@ export const ingredientsReducer = (state = ingredientsInitialState, action) => {
         ingredients: state.ingredients.map((item) =>
           item.__v > 0 ? {
             ...item,
-            '__v': 0
+            __v: 0
           } : item
         )}
     }

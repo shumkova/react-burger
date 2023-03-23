@@ -3,9 +3,8 @@ import ErrorBoundary from '../error-boundary/error-doundary';
 import { Route, Routes, useLocation} from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
 import { Loader } from '../../ui/loader/loader';
-import { useDispatch, useSelector } from 'react-redux';
-import {getAccessToken, getUser, USER_LOADED} from '../../services/actions/auth';
-import { getIngredients } from '../../services/actions/ingredients';
+import {getAccessTokenThunk, getUserThunk, USER_LOADED} from '../../services/actions/auth';
+import { getIngredientsThunk } from '../../services/actions/ingredients';
 import ProfileInfo from '../profile-info/profile-info';
 import ModalIngredient from '../modal-ingredient';
 import AppHeader from '../app-header/app-header';
@@ -24,12 +23,13 @@ import {
   OrderPage
 } from '../../pages/index';
 import { getCookie } from '../../utils/cookie';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 const App = () => {
-  const dispatch = useDispatch();
-  const { ordersError, userOrdersError } = useSelector(state => state.orders);
-  const { user, userLoaded } = useSelector(state => state.auth);
-  const { ingredients, ingredientsFailed } = useSelector(state => state.ingredients);
+  const dispatch = useAppDispatch();
+  const { ordersError, userOrdersError } = useAppSelector(state => state.orders);
+  const { user, userLoaded } = useAppSelector(state => state.auth);
+  const { ingredients, ingredientsFailed } = useAppSelector(state => state.ingredients);
   const location = useLocation();
   const backgroundLocation = location.state && location.state.backgroundLocation;
 
@@ -44,9 +44,9 @@ const App = () => {
     }
 
     if (accessToken) {
-      dispatch(getUser());
+      dispatch(getUserThunk());
     } else if (refreshToken) {
-      dispatch(getAccessToken());
+      dispatch(getAccessTokenThunk());
     } else {
       dispatch({ type: USER_LOADED });
     }
@@ -54,7 +54,7 @@ const App = () => {
 
   useEffect(() => {
     checkUser();
-    dispatch(getIngredients());
+    dispatch(getIngredientsThunk());
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -67,7 +67,7 @@ const App = () => {
               <Route path={'/'} element={<MainPage />} />
               <Route path={'/ingredients/:id'} element={<IngredientPage />} />
               <Route path={'/login'} element={<ProtectedRoute anonymous={true} element={<LoginPage />} />} />
-              <Route path={'/register'} element={<ProtectedRoute anonymous={true} element={<RegisterPage />} />} />
+              <Route path={'/registerThunk'} element={<ProtectedRoute anonymous={true} element={<RegisterPage />} />} />
               <Route path={'/forgot-password'} element={<ProtectedRoute anonymous={true} element={<ForgotPasswordPage />} />} />
               <Route path={'/reset-password'} element={<ProtectedRoute anonymous={true} element={<ResetPassword />} />} />
               <Route path={'/profile'} element={<ProtectedRoute element={<ProfilePage />} />}>

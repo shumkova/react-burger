@@ -3,13 +3,13 @@ import styles from './filling-ingredient.module.css';
 import PropTypes from 'prop-types';
 import {ConstructorElement, DragIcon} from '@ya.praktikum/react-developer-burger-ui-components';
 import { DECREASE_INGREDIENT_AMOUNT } from '../../services/actions/ingredients';
-import { REMOVE_FILLING_FROM_CONSTRUCTOR } from '../../services/actions/burger-constructor';
+import { removeFillingFromConstructorAction } from '../../services/actions/burger-constructor';
 import {useDispatch} from 'react-redux';
 import {ingredientPropTypes} from '../../utils/proptypes';
 import {useDrag, useDrop} from 'react-dnd';
 
 const FillingIngredient = ({ data, moveIngredient, findIngredient }) => {
-  const id = data['_id'];
+  const id = data._id;
   const dispatch = useDispatch();
   const ref = useRef();
 
@@ -18,9 +18,9 @@ const FillingIngredient = ({ data, moveIngredient, findIngredient }) => {
   const [{ isDragging }, dragRef] = useDrag(
     () => ({
       type: 'filling',
-        item: {
+      item: {
         id: data.key,
-          originalIndex
+        originalIndex
       },
       collect: (monitor) => ({
         isDragging: monitor.isDragging()
@@ -32,7 +32,7 @@ const FillingIngredient = ({ data, moveIngredient, findIngredient }) => {
           moveIngredient(droppedKey, originalIndex);
         }
       }
-      }), [moveIngredient, findIngredient]
+    }), [moveIngredient, findIngredient]
   );
 
   const [{ handlerId }, dropRef] = useDrop({
@@ -51,10 +51,7 @@ const FillingIngredient = ({ data, moveIngredient, findIngredient }) => {
   dragRef(dropRef(ref));
 
   const removeIngredient = (id, key) => {
-    dispatch({
-      type: REMOVE_FILLING_FROM_CONSTRUCTOR,
-      key
-    })
+    dispatch(removeFillingFromConstructorAction(key));
 
     dispatch({
       type: DECREASE_INGREDIENT_AMOUNT,

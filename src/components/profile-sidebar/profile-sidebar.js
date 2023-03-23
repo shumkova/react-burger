@@ -2,14 +2,14 @@ import styles from './profile-sidebar.module.css';
 import { Link, useLocation } from 'react-router-dom';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { signOut } from '../../services/actions/auth';
+import { signOutThunk } from '../../services/actions/auth';
 
 const ProfileSidebar = () => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
 
   const logOut = useCallback(() => {
-    dispatch(signOut());
+    dispatch(signOutThunk());
   }, [dispatch]);
 
   return (

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { EmailInput, PasswordInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { register } from '../services/actions/auth';
+import { registerThunk } from '../services/actions/auth';
 import { Loader } from '../ui/loader/loader';
 import {useForm} from "../hooks/use-form";
 
@@ -14,7 +14,7 @@ const RegisterPage = () => {
 
   const createUser = useCallback((evt) => {
     evt.preventDefault();
-    dispatch(register(form));
+    dispatch(registerThunk(form));
   }, [dispatch, form]);
 
   return (

@@ -4,9 +4,9 @@ import { Button, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-co
 import Modal from '../modal/modal';
 import styles from './cart.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { CLEAR_ORDER_INFO, placeOrder} from '../../services/actions/order';
-import { DECREASE_INGREDIENT_AMOUNT, INCREASE_INGREDIENT_AMOUNT } from '../../services/actions/ingredients';
-import { ADD_BUN_TO_CONSTRUCTOR, ADD_FILLING_TO_CONSTRUCTOR } from '../../services/actions/burger-constructor';
+import { clearOrderInfoAction, placeOrderThunk } from '../../services/actions/order';
+import { decreaseIngredientAmountAction, increaseIngredientAmountAction } from '../../services/actions/ingredients';
+import { addBunToConstructorAction, addFillingToConstructorAction } from '../../services/actions/burger-constructor';
 import { countSum } from './cart.utils';
 import { BUN } from '../../utils/consts';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const closeOrderModal = () => {
-    dispatch({ type: CLEAR_ORDER_INFO });
+    dispatch(clearOrderInfoAction());
   }
 
   const orderSum = useMemo(() => {
@@ -30,40 +30,28 @@ const Cart = () => {
 
   const onOrderClick = (evt) => {
     evt.preventDefault();
-    const ids = [constructorIngredients.bun['_id'], ...constructorIngredients.filling.map((item) => item['_id']), constructorIngredients.bun['_id']];
-    user ? dispatch(placeOrder(ids)) : navigate('/login');
+    const ids = [constructorIngredients.bun._id, ...constructorIngredients.filling.map((item) => item._id), constructorIngredients.bun._id];
+    user ? dispatch(placeOrderThunk(ids)) : navigate('/login');
   }
 
   const handleDrop = (draggableItem) => {
-    dispatch({
-      type: INCREASE_INGREDIENT_AMOUNT,
-      id: draggableItem.id
-    });
+    dispatch(increaseIngredientAmountAction(draggableItem.id));
 
-    const ingredient = ingredients.find((item) => item['_id'] === draggableItem.id);
+    const ingredient = ingredients.find((item) => item._id === draggableItem.id);
 
     if (ingredient.type === BUN) {
-      const previousBun = ingredients.find((item) => item.type === BUN && item['__v'] > 0);
+      const previousBun = ingredients.find((item) => item.type === BUN && item.__v > 0);
 
-      dispatch({
-        type: ADD_BUN_TO_CONSTRUCTOR,
-        bun: ingredient
-      })
+      dispatch(addBunToConstructorAction(ingredient));
 
       if (!previousBun) return;
 
-      dispatch({
-        type: DECREASE_INGREDIENT_AMOUNT,
-        id: previousBun['_id']
-      });
+      dispatch(decreaseIngredientAmountAction(previousBun._id));
     } else {
-      dispatch({
-        type: ADD_FILLING_TO_CONSTRUCTOR,
-        ingredient: {
-          ...ingredient,
-          key: `${ingredient['_id']}${ingredient['__v']}`
-        }
-      })
+      dispatch(addFillingToConstructorAction({
+        ...ingredient,
+        key: `${ingredient._id}${ingredient.__v}`
+      }))
     }
   }
 

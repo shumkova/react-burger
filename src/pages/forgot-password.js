@@ -3,7 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { forgotPassword } from '../services/actions/auth';
+import { forgotPasswordThunk } from '../services/actions/auth';
 import { Loader } from '../ui/loader/loader';
 
 const ForgotPasswordPage = () => {
@@ -19,7 +19,7 @@ const ForgotPasswordPage = () => {
 
   const restore = useCallback((evt) => {
     evt.preventDefault();
-    dispatch(forgotPassword(email, () => { navigate('/reset-password', {replace: true}) }));
+    dispatch(forgotPasswordThunk(email, () => { navigate('/reset-password', {replace: true}) }));
   }, [email, dispatch, navigate]);
 
   return (

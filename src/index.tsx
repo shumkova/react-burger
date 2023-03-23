@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { initStore } from './services/store';
 
-const store = initStore();
+export const store = initStore();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

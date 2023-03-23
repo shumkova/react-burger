@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { EmailInput, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
-import { signIn } from '../services/actions/auth';
+import { signInThunk } from '../services/actions/auth';
 import { useDispatch } from 'react-redux';
 import { useForm } from '../hooks/use-form';
 
@@ -14,7 +14,7 @@ const LoginPage = () => {
 
   const login = useCallback((evt) => {
     evt.preventDefault();
-    dispatch(signIn(form, () => { navigate(state.from, {replace: true}) }));
+    dispatch(signInThunk(form, () => { navigate(state.from, {replace: true}) }));
   }, [dispatch, form, navigate, state]);
 
   return (
@@ -46,7 +46,7 @@ const LoginPage = () => {
       </form>
       <p className={`${styles.option} mb-4`}>
         <span className="text text_type_main-small text_color_inactive">Вы - новый пользователь? </span>
-        <Link className={'link'} to={'/register'}>Зарегистрироваться</Link>
+        <Link className={'link'} to={'/registerThunk'}>Зарегистрироваться</Link>
       </p>
       <p className={styles.option}>
         <span className="text text_type_main-small text_color_inactive">Забыли пароль? </span>

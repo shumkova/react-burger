@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { Input, PasswordInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import styles from './login.module.css';
-import {resetPassword} from '../services/actions/auth';
+import {resetPasswordThunk} from '../services/actions/auth';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCookie} from '../utils/cookie';
 import {Loader} from '../ui/loader/loader';
@@ -17,7 +17,7 @@ const ResetPasswordPage = () => {
 
   const reset = (evt) => {
     evt.preventDefault();
-    dispatch(resetPassword(form, navigate('/login', { replace: true } )));
+    dispatch(resetPasswordThunk(form, navigate('/login', { replace: true } )));
   }
 
   if (!forgotPasswordAction) {

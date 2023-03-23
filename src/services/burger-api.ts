@@ -1,9 +1,10 @@
-import { request } from './base-api';
-import {getCookie} from "../utils/cookie";
+import { request, TResponseBody } from './base-api';
+import { getCookie } from '../utils/cookie';
+import { TConfirmedOrder } from './types/data';
 
 const getIngredientsRequest = () => request('ingredients');
 
-const placeOrderRequest = (ingredientsArr) => {
+const placeOrderRequest = (ingredientsArr: Array<string>): Promise<TResponseBody<TConfirmedOrder>> => {
   return request('orders', {
     method: 'POST',
     headers: {
@@ -16,4 +17,4 @@ const placeOrderRequest = (ingredientsArr) => {
   })
 }
 
-export { getIngredientsRequest, placeOrderRequest};
+export { getIngredientsRequest, placeOrderRequest };

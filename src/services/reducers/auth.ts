@@ -20,34 +20,80 @@ import {
   RESET_PASSWORD_SUCCESS,
   REGISTER_REQUEST,
   REGISTER_FAILED,
-  REGISTER_SUCCESS
+  REGISTER_SUCCESS, TAuthActions, SAVE_USER
 } from '../actions/auth';
+import { TUser } from '../types/data';
 
-const authInitialState = {
+type TAuthState = {
+  user: TUser | null,
+  loggedIn: boolean,
+  userLoaded: boolean,
+
+  userRequest: boolean,
+  userFailed: boolean,
+
+  updateUserRequest: boolean,
+  updateUserFailed: boolean,
+
+  loginRequest: boolean,
+  loginFailed: boolean,
+
+  logoutRequest: boolean,
+  logoutFailed: boolean,
+
+  forgotPasswordRequest: boolean,
+  forgotPasswordFailed: boolean,
+  forgotPasswordSuccess: boolean,
+
+  resetPasswordRequest: boolean,
+  resetPasswordFailed: boolean,
+  resetPasswordSuccess: boolean,
+
+  registerRequest: boolean,
+  registerFailed: boolean,
+
+  userError: string | null
+}
+
+const authInitialState: TAuthState = {
   user: null,
   loggedIn: false,
   userLoaded: false,
+
   userRequest: false,
   userFailed: false,
+
   updateUserRequest: false,
   updateUserFailed: false,
+
   loginRequest: false,
   loginFailed: false,
+
   logoutRequest: false,
   logoutFailed: false,
+
   forgotPasswordRequest: false,
   forgotPasswordFailed: false,
   forgotPasswordSuccess: false,
+
   resetPasswordRequest: false,
   resetPasswordFailed: false,
   resetPasswordSuccess: false,
+
   registerRequest: false,
   registerFailed: false,
+
   userError: null
 }
 
-export const authReducer = (state = authInitialState, action) => {
+export const authReducer = (state = authInitialState, action: TAuthActions) => {
   switch (action.type) {
+    case SAVE_USER: {
+      return {
+        ...state,
+        user: action.user
+      }
+    }
     case GET_USER_REQUEST: {
       return {
         ...state,
@@ -59,7 +105,6 @@ export const authReducer = (state = authInitialState, action) => {
     case GET_USER_SUCCESS: {
       return {
         ...state,
-        user: action.user,
         userRequest: false,
         userFailed: false,
         userLoaded: true,

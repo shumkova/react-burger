@@ -3,7 +3,7 @@ import { Input, EmailInput, PasswordInput } from '@ya.praktikum/react-developer-
 import styles from './profile-info.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { updateUser } from '../../services/actions/auth';
+import { updateUserThunk } from '../../services/actions/auth';
 import { useForm } from '../../hooks/use-form';
 
 const ProfileInfo = () => {
@@ -38,7 +38,7 @@ const ProfileInfo = () => {
 
   const saveChanges = useCallback((evt) => {
     evt.preventDefault();
-    dispatch(updateUser(form));
+    dispatch(updateUserThunk(form));
     setChanged(false);
   }, [dispatch, form])
 

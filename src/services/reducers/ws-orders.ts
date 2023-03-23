@@ -9,10 +9,22 @@ import {
   WS_USER_ORDERS_ERROR,
   WS_USER_ORDERS_CLOSE,
   WS_USER_ORDERS_CLOSED,
-  WS_GET_USER_ORDERS
+  WS_GET_USER_ORDERS, TWsOrdersActions
 } from '../actions/ws-orders';
+import { TOrder } from '../types/data';
 
-const initialState = {
+type TWsOrdersState = {
+  wsOrdersConnected: boolean,
+  wsUserOrdersConnected: boolean,
+  orders: ReadonlyArray<TOrder>,
+  userOrders: ReadonlyArray<TOrder>,
+  total: number,
+  totalToday: number,
+  ordersError: null | string,
+  userOrdersError: null | string
+}
+
+const initialState: TWsOrdersState = {
   wsOrdersConnected: false,
   wsUserOrdersConnected: false,
   orders: [],
@@ -23,7 +35,7 @@ const initialState = {
   userOrdersError: null
 };
 
-export const wsOrdersReducer = (state = initialState, action) => {
+export const wsOrdersReducer = (state = initialState, action: TWsOrdersActions) => {
   switch (action.type) {
     case WS_ORDERS_SUCCESS: {
       return {

@@ -1,45 +1,44 @@
-import React, { memo } from 'react';
+import React, { memo, FC } from 'react';
 import styles from './burger-constructor.module.css';
 import { ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
-import {useDispatch, useSelector} from 'react-redux';
 import { useDrop } from 'react-dnd';
-import PropTypes from 'prop-types';
-import { MOVE_FILLING_INGREDIENTS } from '../../services/actions/burger-constructor';
+import { moveFillingIngredientsAction } from '../../services/actions/burger-constructor';
 import FillingIngredient from '../filling-ingredient/filling-ingredient';
 import { BUN, MAIN, SAUCE } from '../../utils/consts';
+import { TConstructorIngredient } from '../../services/types/data';
+import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
-const BurgerConstructor = memo(({ onDropHandler }) => {
-  const { bun, filling } = useSelector(state => state.constructorIngredients);
-  const dispatch = useDispatch();
+interface IBurgerConstructor {
+  onDropHandler: (arg: {}) => void;
+}
+
+const BurgerConstructor: FC<IBurgerConstructor> = memo(({ onDropHandler }) => {
+  const { bun, filling } = useAppSelector(state => state.constructorIngredients);
+  const dispatch = useAppDispatch();
 
   const [, dropTarget] = useDrop({
     accept: [BUN, SAUCE, MAIN],
-    drop(itemId) {
+    drop(itemId: {}) {
       onDropHandler(itemId);
     }
   });
 
-  const findFillingIngredient = (key) => {
-    const ingredient = filling.filter((item) => `${item.key}` === key)[0];
+  const findFillingIngredient = (key: string): {ingredient: TConstructorIngredient, index: number} => {
+    const ingredient = filling.filter((item: TConstructorIngredient) => `${item.key}` === key)[0];
     return {
       ingredient,
       index: filling.indexOf(ingredient),
     }
   }
 
-  const moveFillingIngredient = (key, toIndex) => {
+  const moveFillingIngredient = (key: string, toIndex: number) => {
     const { index } = findFillingIngredient(key);
-    dispatch({
-      type: MOVE_FILLING_INGREDIENTS,
-      index,
-      toIndex
-    })
+    dispatch(moveFillingIngredientsAction(index, toIndex));
   }
 
   const chosen = bun || filling.length > 0;
 
   return (
-
     <div className={`pl-4 pb-5 ${styles.container} ${!chosen ? styles.container_empty : ''}`} ref={dropTarget}>
       {!chosen && <p className="text text_type_main-default">Перетащите выбранные ингредиенты сюда</p>}
       {bun && (
@@ -56,8 +55,8 @@ const BurgerConstructor = memo(({ onDropHandler }) => {
       <ul className={`${styles.inner}`}>
         {
           filling.length > 0 ?
-            filling.map((item, index) => (
-              <FillingIngredient data={item} index={index} moveIngredient={moveFillingIngredient} findIngredient={findFillingIngredient} key={item.key}/>
+            filling.map((item: TConstructorIngredient) => (
+              <FillingIngredient data={item} moveIngredient={moveFillingIngredient} findIngredient={findFillingIngredient} key={item.key}/>
             ))
             : ('')
         }
@@ -76,9 +75,5 @@ const BurgerConstructor = memo(({ onDropHandler }) => {
     </div>
   )
 })
-
-BurgerConstructor.propTypes = {
-  onDropHandler: PropTypes.func.isRequired
-}
 
 export default BurgerConstructor;

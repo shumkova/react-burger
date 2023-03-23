@@ -2,17 +2,25 @@ import {
   PLACE_ORDER_REQUEST,
   PLACE_ORDER_SUCCESS,
   PLACE_ORDER_FAILED,
-  CLEAR_ORDER_INFO,
+  CLEAR_ORDER_INFO, TPlaceOrderActions,
 } from '../actions/order';
+import {TConfirmedOrder} from "../types/data";
 
-const orderInitialState = {
-  orderRequest: false,
-  orderFailed: false,
-  orderError: '',
-  orderInfo: {}
+type TOrderState = {
+  orderRequest: boolean,
+  orderFailed: boolean,
+  orderError: string | null,
+  orderInfo: TConfirmedOrder | null
 }
 
-export const orderReducer = (state = orderInitialState, action) => {
+const orderInitialState: TOrderState = {
+  orderRequest: false,
+  orderFailed: false,
+  orderError: null,
+  orderInfo: null
+}
+
+export const orderReducer = (state = orderInitialState, action: TPlaceOrderActions) => {
   switch (action.type) {
     case PLACE_ORDER_REQUEST: {
       return {
@@ -25,7 +33,8 @@ export const orderReducer = (state = orderInitialState, action) => {
         ...state,
         orderRequest: false,
         orderFailed: false,
-        orderInfo: action.order
+        orderInfo: action.order,
+        orderError: null
       }
     }
     case PLACE_ORDER_FAILED: {
@@ -33,14 +42,14 @@ export const orderReducer = (state = orderInitialState, action) => {
         ...state,
         orderRequest: false,
         orderFailed: true,
-        orderError: action.text,
-        orderInfo: {}
+        orderError: action.err,
+        orderInfo: null
       }
     }
     case CLEAR_ORDER_INFO: {
       return {
         ...state,
-        orderInfo: {}
+        orderInfo: null
       }
     }
     default: {

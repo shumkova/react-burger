@@ -1,7 +1,8 @@
 import { getCookie } from '../utils/cookie';
-import { request } from './base-api';
+import {request, TRegisterRequest, TResponseBody} from './base-api';
+import {TTokens, TUser, TUserFull} from "./types/data";
 
-export const loginRequest = (form) => {
+export const loginRequest = (form: { email: string; password: string}): Promise<TResponseBody<TRegisterRequest>> => {
   return request('auth/login', {
     method: 'POST',
     headers: {
@@ -11,8 +12,8 @@ export const loginRequest = (form) => {
   })
 }
 
-export const registerRequest = (form) => {
-  return request('auth/register', {
+export const registerRequest = (form: TUserFull): Promise<TResponseBody<TRegisterRequest>> => {
+  return request('auth/registerThunk', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -21,7 +22,7 @@ export const registerRequest = (form) => {
   })
 }
 
-export const getUserRequest = () => {
+export const getUserRequest = (): Promise<TResponseBody<{ user: TUser }>> => {
   return request('auth/user', {
     method: 'GET',
     headers: {
@@ -31,17 +32,17 @@ export const getUserRequest = () => {
   })
 }
 
-export const accessTokenRequest = () => {
+export const accessTokenRequest = (): Promise<TResponseBody<TTokens>> => {
   return request('auth/token', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({token: localStorage.getItem('refreshToken')})
+    body: JSON.stringify({ token: localStorage.getItem('refreshToken') })
   })
 }
 
-export const updateUserRequest = (form) => {
+export const updateUserRequest = (form: TUserFull): Promise<TResponseBody<{ user: TUser }>> => {
   return request('auth/user', {
     method: 'PATCH',
     headers: {
@@ -52,7 +53,7 @@ export const updateUserRequest = (form) => {
   })
 }
 
-export const logOutRequest = () => {
+export const logOutRequest = (): Promise<TResponseBody<{ message: string }>> => {
   return request('auth/logout', {
     method: 'POST',
     headers: {
@@ -62,7 +63,7 @@ export const logOutRequest = () => {
   })
 }
 
-export const forgotPasswordRequest = (email) => {
+export const forgotPasswordRequest = (email: string): Promise<TResponseBody<{ message: string }>> => {
   return request('password-reset', {
     method: 'POST',
     headers: {
@@ -72,7 +73,7 @@ export const forgotPasswordRequest = (email) => {
   })
 }
 
-export const resetPasswordRequest = (form) => {
+export const resetPasswordRequest = (form: { password: string; token: string }): Promise<TResponseBody<{ message: string }>> => {
   return request('password-reset/reset', {
     method: 'POST',
     headers: {

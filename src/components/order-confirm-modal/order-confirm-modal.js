@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import OrderConfirm from "../order-confirm/order-confirm";
+import OrderConfirm from '../order-confirm/order-confirm';
 
 const OrderConfirmModal = () => {
   const { orderInfo, orderFailed } = useSelector(state => state.order);
 
-  return !orderFailed && orderInfo.number ? (
+  return !orderFailed && orderInfo ? (
     <OrderConfirm number={orderInfo.number}/>
   ) : (
     <>

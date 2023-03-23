@@ -3,15 +3,21 @@ import {
   ADD_FILLING_TO_CONSTRUCTOR,
   REMOVE_FILLING_FROM_CONSTRUCTOR,
   UPDATE_FILLING_INGREDIENTS,
-  MOVE_FILLING_INGREDIENTS, CLEAR_CONSTRUCTOR
+  MOVE_FILLING_INGREDIENTS, CLEAR_CONSTRUCTOR, TBurgerConstructorActions
 } from '../actions/burger-constructor';
+import { TConstructorIngredient, TIngredient } from '../types/data';
 
-const burgerConstructorInitialState = {
+type TBurgerConstructorState = {
+  bun: null | TIngredient,
+  filling: Array<TConstructorIngredient>
+}
+
+const burgerConstructorInitialState: TBurgerConstructorState = {
   bun: null,
   filling: []
 };
 
-export const burgerConstructorReducer = (state = burgerConstructorInitialState, action) => {
+export const burgerConstructorReducer = (state = burgerConstructorInitialState, action: TBurgerConstructorActions) => {
   switch (action.type) {
     case UPDATE_FILLING_INGREDIENTS: {
       return {
