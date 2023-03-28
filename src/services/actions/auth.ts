@@ -7,7 +7,7 @@ import {
   updateUserRequest, forgotPasswordRequest, resetPasswordRequest
 } from '../auth-api';
 import { deleteCookie, setCookie } from '../../utils/cookie';
-import { TUser } from '../types/data';
+import { TUser, TUserFull } from '../types/data';
 import { TAnyFunc } from '../types/utils';
 import { TAppThunk } from '../types';
 
@@ -225,9 +225,9 @@ const saveTokens = ( { accessToken, refreshToken }: ISaveUserData ): void => {
   }
 }
 
-export const getUserThunk: TAppThunk = () => (dispatch) => {
+export const getUser:TAppThunk = () => (dispatch) => {
   dispatch(getUserRequestAction());
-  getUserRequest()
+  return getUserRequest()
     .then(res => {
       dispatch(getUserSuccessAction());
       dispatch(loginSuccessAction());
@@ -238,29 +238,25 @@ export const getUserThunk: TAppThunk = () => (dispatch) => {
 
       const refreshToken = localStorage.getItem('refreshToken');
       refreshToken ?
-        dispatch(getAccessTokenThunk())
+        dispatch(getAccessToken())
         : dispatch(userLoadedAction());
     })
 }
 
-export const getAccessTokenThunk: TAppThunk = () => (dispatch) => {
-  accessTokenRequest()
+export const getAccessToken: TAppThunk = () => (dispatch) => {
+  return accessTokenRequest()
     .then((res) => {
       saveAccessToken(res.accessToken);
-      dispatch(getUserThunk());
+      dispatch(getUser());
     })
     .catch(err => {
       dispatch(userLoadedAction());
     })
 }
 
-type UserForm = {
-  [name: string]: string;
-}
-
-export const updateUserThunk: TAppThunk = (form: UserForm) => (dispatch) => {
+export const updateUser: TAppThunk = (form: TUserFull) => (dispatch) => {
   dispatch(updateUserRequestAction());
-  updateUserRequest(form)
+  return updateUserRequest(form)
     .then(res => {
       dispatch(updateUserSuccessAction(res.user));
     })
@@ -269,9 +265,9 @@ export const updateUserThunk: TAppThunk = (form: UserForm) => (dispatch) => {
     })
 }
 
-export const signInThunk: TAppThunk = (form: UserForm, onSuccess: TAnyFunc) => (dispatch) => {
+export const signIn: TAppThunk = (form: { email: string; password: string }, onSuccess: TAnyFunc) => (dispatch) => {
   dispatch(loginRequestAction());
-  loginRequest(form)
+  return loginRequest(form)
     .then(res => {
       dispatch(loginSuccessAction());
       dispatch(saveUserAction(res.user));
@@ -286,9 +282,9 @@ export const signInThunk: TAppThunk = (form: UserForm, onSuccess: TAnyFunc) => (
     })
 }
 
-export const signOutThunk: TAppThunk = (successCb: TAnyFunc) => (dispatch) => {
+export const signOut: TAppThunk = (successCb: TAnyFunc) => (dispatch) => {
   dispatch(logoutRequestAction());
-  logOutRequest()
+  return logOutRequest()
     .then(res => {
       dispatch(logoutSuccessAction());
       deleteCookie('accessToken');
@@ -303,9 +299,9 @@ export const signOutThunk: TAppThunk = (successCb: TAnyFunc) => (dispatch) => {
     })
 }
 
-export const registerThunk: TAppThunk = (form: UserForm) => (dispatch) => {
+export const register: TAppThunk = (form: TUserFull) => (dispatch) => {
   dispatch(registerRequestAction());
-  registerRequest(form)
+  return registerRequest(form)
     .then(res => {
       dispatch(registerSuccessAction());
       dispatch(userLoadedAction());
@@ -318,12 +314,12 @@ export const registerThunk: TAppThunk = (form: UserForm) => (dispatch) => {
     })
 }
 
-export const forgotPasswordThunk: TAppThunk = (email: string, successCb: TAnyFunc) => (dispatch) => {
+export const forgotPassword: TAppThunk = (email: string, successCb: TAnyFunc) => (dispatch) => {
   dispatch(forgotPasswordRequestAction());
-  forgotPasswordRequest(email)
+  return forgotPasswordRequest(email)
     .then(res => {
       dispatch(forgotPasswordSuccessAction())
-      setCookie('forgotPasswordThunk', 'true', {expires: 1200});
+      setCookie('forgotPassword', 'true', {expires: 1200});
       if (successCb) {
         successCb();
       }
@@ -333,12 +329,12 @@ export const forgotPasswordThunk: TAppThunk = (email: string, successCb: TAnyFun
     })
 }
 
-export const resetPasswordThunk: TAppThunk = (form: UserForm, successCb: TAnyFunc) => (dispatch) => {
+export const resetPassword: TAppThunk = (form: { password: string; token: string }, successCb: TAnyFunc) => (dispatch) => {
   dispatch(resetPasswordRequestAction());
-  resetPasswordRequest(form)
+  return resetPasswordRequest(form)
     .then(res => {
       dispatch(resetPasswordSuccessAction());
-      deleteCookie('forgotPasswordThunk');
+      deleteCookie('forgotPassword');
       if (successCb) {
         successCb();
       }

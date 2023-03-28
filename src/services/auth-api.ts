@@ -1,6 +1,6 @@
 import { getCookie } from '../utils/cookie';
-import {request, TRegisterRequest, TResponseBody} from './base-api';
-import {TTokens, TUser, TUserFull} from "./types/data";
+import { request, TRegisterRequest, TResponseBody } from './base-api';
+import { TTokens, TUser, TUserFull } from './types/data';
 
 export const loginRequest = (form: { email: string; password: string}): Promise<TResponseBody<TRegisterRequest>> => {
   return request('auth/login', {
@@ -13,7 +13,7 @@ export const loginRequest = (form: { email: string; password: string}): Promise<
 }
 
 export const registerRequest = (form: TUserFull): Promise<TResponseBody<TRegisterRequest>> => {
-  return request('auth/registerThunk', {
+  return request('auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -28,7 +28,7 @@ export const getUserRequest = (): Promise<TResponseBody<{ user: TUser }>> => {
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + getCookie('accessToken')
-    }
+    },
   })
 }
 
@@ -53,7 +53,7 @@ export const updateUserRequest = (form: TUserFull): Promise<TResponseBody<{ user
   })
 }
 
-export const logOutRequest = (): Promise<TResponseBody<{ message: string }>> => {
+export const logOutRequest = (): Promise<TResponseBody> => {
   return request('auth/logout', {
     method: 'POST',
     headers: {
@@ -63,7 +63,7 @@ export const logOutRequest = (): Promise<TResponseBody<{ message: string }>> => 
   })
 }
 
-export const forgotPasswordRequest = (email: string): Promise<TResponseBody<{ message: string }>> => {
+export const forgotPasswordRequest = (email: string): Promise<TResponseBody> => {
   return request('password-reset', {
     method: 'POST',
     headers: {
@@ -73,7 +73,7 @@ export const forgotPasswordRequest = (email: string): Promise<TResponseBody<{ me
   })
 }
 
-export const resetPasswordRequest = (form: { password: string; token: string }): Promise<TResponseBody<{ message: string }>> => {
+export const resetPasswordRequest = (form: { password: string; token: string }): Promise<TResponseBody> => {
   return request('password-reset/reset', {
     method: 'POST',
     headers: {

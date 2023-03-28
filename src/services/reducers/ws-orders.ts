@@ -20,8 +20,8 @@ type TWsOrdersState = {
   userOrders: ReadonlyArray<TOrder>,
   total: number,
   totalToday: number,
-  ordersError: null | string,
-  userOrdersError: null | string
+  ordersError: null | string | Event,
+  userOrdersError: null | string | Event
 }
 
 const initialState: TWsOrdersState = {

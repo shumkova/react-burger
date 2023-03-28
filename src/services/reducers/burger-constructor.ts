@@ -7,9 +7,9 @@ import {
 } from '../actions/burger-constructor';
 import { TConstructorIngredient, TIngredient } from '../types/data';
 
-type TBurgerConstructorState = {
-  bun: null | TIngredient,
-  filling: Array<TConstructorIngredient>
+export type TBurgerConstructorState = {
+  bun: TIngredient | null;
+  filling: ReadonlyArray<TConstructorIngredient>;
 }
 
 const burgerConstructorInitialState: TBurgerConstructorState = {
@@ -47,10 +47,11 @@ export const burgerConstructorReducer = (state = burgerConstructorInitialState, 
       }
     }
     case MOVE_FILLING_INGREDIENTS: {
-      state.filling.splice(action.toIndex, 0, state.filling.splice(action.index, 1)[0]);
+      const fillingArr = [...state.filling];
+      fillingArr.splice(action.toIndex, 0, fillingArr.splice(action.index, 1)[0]);
       return {
         ...state,
-        filling: [...state.filling]
+        filling: fillingArr
       }
     }
     case CLEAR_CONSTRUCTOR: {

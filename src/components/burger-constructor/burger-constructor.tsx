@@ -9,8 +9,11 @@ import { TConstructorIngredient } from '../../services/types/data';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
 interface IBurgerConstructor {
-  onDropHandler: (arg: {}) => void;
+  onDropHandler: (arg: { id: string; originalIndex: string }) => void;
 }
+
+export type TFindIngredient = (arg: string) => {ingredient: TConstructorIngredient, index: number};
+export type TMoveFillingIngredient = (key: string, toIndex: number) => void;
 
 const BurgerConstructor: FC<IBurgerConstructor> = memo(({ onDropHandler }) => {
   const { bun, filling } = useAppSelector(state => state.constructorIngredients);
@@ -18,12 +21,12 @@ const BurgerConstructor: FC<IBurgerConstructor> = memo(({ onDropHandler }) => {
 
   const [, dropTarget] = useDrop({
     accept: [BUN, SAUCE, MAIN],
-    drop(itemId: {}) {
+    drop(itemId: { id: string; originalIndex: string }) {
       onDropHandler(itemId);
     }
   });
 
-  const findFillingIngredient = (key: string): {ingredient: TConstructorIngredient, index: number} => {
+  const findFillingIngredient: TFindIngredient = (key) => {
     const ingredient = filling.filter((item: TConstructorIngredient) => `${item.key}` === key)[0];
     return {
       ingredient,
@@ -31,7 +34,7 @@ const BurgerConstructor: FC<IBurgerConstructor> = memo(({ onDropHandler }) => {
     }
   }
 
-  const moveFillingIngredient = (key: string, toIndex: number) => {
+  const moveFillingIngredient: TMoveFillingIngredient = (key, toIndex) => {
     const { index } = findFillingIngredient(key);
     dispatch(moveFillingIngredientsAction(index, toIndex));
   }

@@ -4,7 +4,7 @@ import {
   PLACE_ORDER_FAILED,
   CLEAR_ORDER_INFO, TPlaceOrderActions,
 } from '../actions/order';
-import {TConfirmedOrder} from "../types/data";
+import { TConfirmedOrder } from "../types/data";
 
 type TOrderState = {
   orderRequest: boolean,

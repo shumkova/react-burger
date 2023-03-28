@@ -1,8 +1,9 @@
 import {TWsActions} from '../store';
 import { Middleware } from 'redux';
+import { TAppDispatch, TRootState } from '../types';
 
-export const socketMiddleware = (wsUrl: string, wsActions: TWsActions): Middleware => {
-  return store => {
+export const socketMiddleware = (wsUrl: string, wsActions: TWsActions): Middleware<{}, TRootState, TAppDispatch> => {
+  return (store) => {
     let socket: WebSocket | null = null;
 
     return next => action => {
@@ -16,11 +17,11 @@ export const socketMiddleware = (wsUrl: string, wsActions: TWsActions): Middlewa
 
       if (socket) {
         socket.onopen = (event: Event) => {
-          dispatch({type: onOpen, payload: event});
+          dispatch({ type: onOpen, payload: event });
         }
 
         socket.onerror = (event: Event) => {
-          dispatch({type: onError, payload: event});
+          dispatch({ type: onError, payload: event });
         }
 
         socket.onmessage = (event: MessageEvent) => {
@@ -31,7 +32,7 @@ export const socketMiddleware = (wsUrl: string, wsActions: TWsActions): Middlewa
         }
 
         socket.onclose = (event: Event) => {
-          dispatch({type: onClose, payload: event});
+          dispatch({ type: onClose, payload: event });
         }
 
         if (type === wsClose) {

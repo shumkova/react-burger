@@ -28,7 +28,7 @@ interface IWsOrdersSuccessAction {
 
 interface IWsOrdersErrorAction {
   readonly type: typeof WS_ORDERS_ERROR;
-  readonly payload: string;
+  readonly payload: string | Event;
 }
 
 interface IWsOrdersClosedAction {
@@ -56,7 +56,7 @@ interface IWsUserOrdersSuccessAction {
 
 interface IWsUserOrdersErrorAction {
   readonly type: typeof WS_USER_ORDERS_ERROR;
-  readonly payload: string;
+  readonly payload: string | Event;
 }
 
 interface IWsUserOrdersClosedAction {

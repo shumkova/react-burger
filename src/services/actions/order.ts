@@ -2,7 +2,7 @@ import { placeOrderRequest } from '../burger-api';
 import { clearConstructor } from './burger-constructor';
 import { resetIngredientsAction } from './ingredients';
 import { TConfirmedOrder } from '../types/data';
-import { TAppDispatch, TAppThunk } from '../types';
+import { TAppThunk } from '../types';
 
 export const PLACE_ORDER_REQUEST: 'PLACE_ORDER_REQUEST' = 'PLACE_ORDER_REQUEST';
 export const PLACE_ORDER_SUCCESS: 'PLACE_ORDER_SUCCESS' = 'PLACE_ORDER_SUCCESS';
@@ -46,10 +46,10 @@ export const clearOrderInfoAction = (): IClearOrderInfoAction => ({
 });
 
 
-export const placeOrderThunk: TAppThunk = (ingredients: Array<string>) => (dispatch: TAppDispatch) => {
+export const placeOrder: TAppThunk = (ingredients: Array<string>) => (dispatch) => {
   dispatch(placeOrderRequestAction());
 
-  placeOrderRequest(ingredients)
+  return placeOrderRequest(ingredients)
     .then(res => {
       dispatch(placeOrderSuccessAction(res.order));
       dispatch(clearConstructor());

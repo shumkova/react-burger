@@ -1,9 +1,12 @@
+import { BUN, MAIN, SAUCE } from '../../utils/consts';
+
 export type TIngredient = {
-  readonly _id: number,
+  readonly _id: string,
   readonly name: string;
   readonly type: string;
   readonly fat: number;
   readonly carbohydrates: number;
+  readonly proteins: number
   readonly calories: number;
   readonly price: number;
   readonly image: string;
@@ -29,6 +32,7 @@ export type TTokens = {
 export type TUserFull = TUser & { password: string };
 
 export type TOrder = {
+  readonly name: string;
   readonly ingredients: ReadonlyArray<string>;
   readonly _id: string;
   readonly status: string;
@@ -38,12 +42,7 @@ export type TOrder = {
 }
 
 export type TConfirmedOrder = {
-  readonly number: number;
+  readonly number?: string;
 }
 
-export type TWsOrdersResponse = {
-  readonly success: boolean;
-  readonly orders: ReadonlyArray<TOrder>;
-  readonly total: string;
-  readonly totalToday: string;
-}
+export type TIngredientTypes = typeof BUN | typeof SAUCE | typeof MAIN;

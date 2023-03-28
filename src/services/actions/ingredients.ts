@@ -1,6 +1,6 @@
 import { getIngredientsRequest } from '../burger-api';
 import { TIngredient } from '../types/data';
-import { TAppDispatch, TAppThunk } from '../types';
+import { TAppThunk } from '../types';
 
 export const GET_INGREDIENTS_REQUEST: 'GET_INGREDIENTS_REQUEST' = 'GET_INGREDIENTS_REQUEST';
 export const GET_INGREDIENTS_SUCCESS: 'GET_INGREDIENTS_SUCCESS' = 'GET_INGREDIENTS_SUCCESS';
@@ -28,12 +28,12 @@ interface IGetIngredientsFailedAction {
 
 interface IIncreaseIngredientAmountAction {
   readonly type: typeof INCREASE_INGREDIENT_AMOUNT;
-  readonly id: number;
+  readonly id: string;
 }
 
 interface IDecreaseIngredientAmountAction {
   readonly type: typeof DECREASE_INGREDIENT_AMOUNT;
-  readonly id: number;
+  readonly id: string;
 }
 
 interface IResetIngredientsAction {
@@ -57,12 +57,12 @@ export const getIngredientsSuccessAction = (ingredients: ReadonlyArray<TIngredie
   ingredients
 })
 
-export const increaseIngredientAmountAction = (id: number): IIncreaseIngredientAmountAction => ({
+export const increaseIngredientAmountAction = (id: string): IIncreaseIngredientAmountAction => ({
   type: INCREASE_INGREDIENT_AMOUNT,
   id
 });
 
-export const decreaseIngredientAmountAction = (id: number): IDecreaseIngredientAmountAction => ({
+export const decreaseIngredientAmountAction = (id: string): IDecreaseIngredientAmountAction => ({
   type: DECREASE_INGREDIENT_AMOUNT,
   id
 });
@@ -71,10 +71,10 @@ export const resetIngredientsAction = (): IResetIngredientsAction => ({
   type: RESET_INGREDIENTS
 })
 
-export const getIngredientsThunk: TAppThunk = () => (dispatch: TAppDispatch) => {
+export const getIngredients: TAppThunk = () => (dispatch) => {
   dispatch(getIngredientsRequestAction());
 
-  getIngredientsRequest()
+  return getIngredientsRequest()
     .then(res => {
       dispatch(getIngredientsSuccessAction(res.data));
     })

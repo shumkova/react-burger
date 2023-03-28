@@ -20,12 +20,12 @@ import {
 const wsUrl = 'wss://norma.nomoreparties.space/orders';
 
 export type TWsActions = {
-  wsInit: string,
-  wsClose: string,
-  onOpen: string,
-  onError: string,
-  onClose: string,
-  onOrders: string
+  wsInit: typeof WS_ORDERS_START | typeof WS_USER_ORDERS_START,
+  wsClose: typeof WS_ORDERS_CLOSE | typeof WS_USER_ORDERS_CLOSE,
+  onOpen: typeof WS_ORDERS_SUCCESS | typeof WS_USER_ORDERS_SUCCESS,
+  onError: typeof WS_ORDERS_ERROR | typeof WS_USER_ORDERS_ERROR,
+  onClose: typeof WS_ORDERS_CLOSED | typeof WS_USER_ORDERS_CLOSED,
+  onOrders: typeof WS_GET_ORDERS | typeof WS_GET_USER_ORDERS
 }
 
 export const wsActionsOrders: TWsActions = {

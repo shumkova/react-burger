@@ -5,30 +5,15 @@ const BASE_URL: string = 'https://norma.nomoreparties.space/api/';
 export type TRequestOptions = {
   method: string;
   headers: { [key: string]: string };
+  mode?: 'cors' | 'no-cors' | 'same-origin' | 'navigate';
   body?: string;
 }
 
-export type TResponseBody<T> = {
+export type TResponseBody<T = any> = {
   success: boolean;
   message?: string;
   headers?: Headers;
 } & T;
-
-export interface CustomBody<T extends any> extends Body {
-  json(): Promise<T>;
-}
-
-export interface CustomResponse<T> extends CustomBody<T> {
-  readonly headers: Headers;
-  readonly ok: boolean;
-  readonly redirected: boolean;
-  readonly status: number;
-  readonly statusText: string;
-  readonly trailer: Promise<Headers>;
-  readonly type: ResponseType;
-  readonly url: string;
-  clone(): Response;
-}
 
 export type TRegisterRequest = {
   readonly user: TUser;

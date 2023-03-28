@@ -1,12 +1,12 @@
 import { TAB_SWITCH, TMenuActions } from '../actions/menu';
-import { IngredientTypes } from '../../utils/consts';
+import { BUN } from '../../utils/consts';
 
 type TMenuState = {
-  currentTab: IngredientTypes
+  currentTab: string;
 }
 
 const menuInitialState: TMenuState = {
-  currentTab: IngredientTypes.bun,
+  currentTab: BUN,
 }
 
 export const menuReducer = (state = menuInitialState, action: TMenuActions) => {

@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import ErrorBoundary from '../error-boundary/error-doundary';
 import { Route, Routes, useLocation} from 'react-router-dom';
 import ProtectedRoute from '../protected-route';
 import { Loader } from '../../ui/loader/loader';
-import {getAccessTokenThunk, getUserThunk, USER_LOADED} from '../../services/actions/auth';
-import { getIngredientsThunk } from '../../services/actions/ingredients';
+import { getAccessToken, getUser, userLoadedAction } from '../../services/actions/auth';
+import { getIngredients } from '../../services/actions/ingredients';
 import ProfileInfo from '../profile-info/profile-info';
 import ModalIngredient from '../modal-ingredient';
 import AppHeader from '../app-header/app-header';
@@ -21,7 +21,7 @@ import {
   IngredientPage,
   FeedPage,
   OrderPage
-} from '../../pages/index';
+} from '../../pages';
 import { getCookie } from '../../utils/cookie';
 import { useAppDispatch, useAppSelector } from '../../services/hooks';
 
@@ -39,22 +39,22 @@ const App = () => {
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (loggedOut || user) {
-      dispatch({ type: USER_LOADED });
+      dispatch(userLoadedAction());
       return;
     }
 
     if (accessToken) {
-      dispatch(getUserThunk());
+      dispatch(getUser());
     } else if (refreshToken) {
-      dispatch(getAccessTokenThunk());
+      dispatch(getAccessToken());
     } else {
-      dispatch({ type: USER_LOADED });
+      dispatch(userLoadedAction());
     }
   }, [user, dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     checkUser();
-    dispatch(getIngredientsThunk());
+    dispatch(getIngredients());
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
@@ -67,7 +67,7 @@ const App = () => {
               <Route path={'/'} element={<MainPage />} />
               <Route path={'/ingredients/:id'} element={<IngredientPage />} />
               <Route path={'/login'} element={<ProtectedRoute anonymous={true} element={<LoginPage />} />} />
-              <Route path={'/registerThunk'} element={<ProtectedRoute anonymous={true} element={<RegisterPage />} />} />
+              <Route path={'/register'} element={<ProtectedRoute anonymous={true} element={<RegisterPage />} />} />
               <Route path={'/forgot-password'} element={<ProtectedRoute anonymous={true} element={<ForgotPasswordPage />} />} />
               <Route path={'/reset-password'} element={<ProtectedRoute anonymous={true} element={<ResetPassword />} />} />
               <Route path={'/profile'} element={<ProtectedRoute element={<ProfilePage />} />}>
@@ -88,7 +88,7 @@ const App = () => {
             )}
           </div>)
           :
-          <Loader size="large"/>
+          <Loader />
       }
     </ErrorBoundary>
   )
